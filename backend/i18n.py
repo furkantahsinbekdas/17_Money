@@ -304,6 +304,11 @@ EXACT = {
     "Kalın kuyruk: aşırı hareketler normalden sık — risk hesabında normal dağılıma güvenme, stop'ları geniş tut.":
         "Fat tail: extreme moves are more frequent than normal — in risk sizing do not trust "
         "the normal distribution, keep stops wide.",
+
+    # --- premium/discount `detay` metni (tek kelime → PHRASES'e takılmaz) -- #
+    "bölge=premium": "zone=premium",
+    "bölge=discount": "zone=discount",
+    "bölge=equilibrium": "zone=equilibrium",
 }
 
 # Cümle içi kalıplar — yalnızca BOŞLUK İÇEREN metinlerde uygulanır (uzun önce).
@@ -367,6 +372,24 @@ PHRASES = (
     ("=orta_volatilite", "=medium_volatility"),
     ("=düşük_volatilite", "=low_volatility"),
     ("=yüksek_volatilite", "=high_volatility"),
+    # Gösterge matrisi tooltip'leri (forecast_service `detay` cümleleri).
+    ("OBV trendi yükselen", "OBV trend rising"),
+    ("OBV trendi düşen", "OBV trend falling"),
+    ("OBV trendi yatay", "OBV trend flat"),
+    ("fiyat üstünde", "price above"),
+    ("fiyat altında", "price below"),
+    ("kırılım yok", "no break"),
+    ("tespit yok", "no detection"),
+    ("pozisyon=", "position="),
+    ("durum=", "state="),
+    ("bölge=", "zone="),
+    ("=üst_bant_üstü", "=above_upper_band"),
+    ("=alt_bant_altı", "=below_lower_band"),
+    ("=orta_üstü", "=upper_half"),
+    ("=orta_altı", "=lower_half"),
+    ("=aşırı_alım", "=overbought"),
+    ("=aşırı_satım", "=oversold"),
+    ("=nötr", "=neutral"),
 )
 _PHRASES_SORTED = tuple(sorted(PHRASES, key=lambda pair: len(pair[0]), reverse=True))
 

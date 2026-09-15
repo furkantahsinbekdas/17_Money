@@ -10,6 +10,8 @@
 
 Status: Active Research Prototype (Alpha / Paper-Trading Engine)
 
+**Languages / Diller:** The application supports **Turkish and English** — *Uygulama Türkçe ve İngilizce dillerini desteklemektedir* (see [§3.4 Language (TR / EN)](#34-language-tr--en)).
+
 ---
 
 ## 1. System Architecture
@@ -86,7 +88,7 @@ npm start
 
 ### 3.4 Language (TR / EN)
 
-The dashboard ships with a bilingual UI (Turkish is the source language, English is the second):
+The application supports Turkish and English — the dashboard ships with a bilingual UI (Turkish is the source language, English is the second):
 
 * **Toggle:** `TR | EN` switch in the top market bar. The choice is persisted in `localStorage`
   (`17money.lang`) and applied on the next visit; `REACT_APP_DEFAULT_LANG=tr|en` sets the first-run
@@ -123,3 +125,12 @@ The dashboard ships with a bilingual UI (Turkish is the source language, English
 * [x] Secrets isolated in `config/.env` and excluded from git tracking.
 * [x] Runtime databases (`.db`), parquet cache (`.parquet`), and model files (`.joblib`) excluded via `.gitignore`.
 * [x] Cross-validated with zero syntax errors (`compileall`) and zero missing symbol imports.
+
+---
+
+## 6. License
+
+**MIT** — see [`LICENSE`](LICENSE). The MIT body is kept byte-identical so GitHub's license detection can
+recognize it; the file additionally carries an **Additional Financial & Trading Disclaimer**: this software is
+provided for research/education, is **not** financial or trading advice, runs in paper-trading mode by default,
+and every trading decision remains the sole responsibility of the user.

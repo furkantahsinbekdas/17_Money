@@ -1,6 +1,6 @@
 import React from 'react';
 import './IndicatorMatrix.css';
-import { t } from '../i18n';
+import { t, tv } from '../i18n';
 
 /* Gösterge Konsensüs Matrisi — her göstergenin her zaman dilimindeki yönü.
    Hücre rengi skora göre: yeşil (boğa) / kırmızı (ayı) / gri (nötr). */
@@ -80,7 +80,7 @@ function IndicatorMatrix({ forecast }) {
                   <span
                     key={tf}
                     className={`mx-cell ${cellClass(k?.skor)}`}
-                    title={k ? `${label} · ${tf}\n${t('skor')}: ${k.skor}\n${k.detay}` : '—'}
+                    title={k ? `${label} · ${tf}\n${t('skor')}: ${k.skor}\n${tv(k.detay)}` : '—'}
                   />
                 );
               })}
