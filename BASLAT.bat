@@ -8,17 +8,35 @@ echo.
 
 cd /d "%~dp0"
 
-:: --- Eski calisan sunuculari temizle (port cakismasini onler) ---
-echo Eski sunucular kontrol ediliyor...
-for /f "tokens=5" %%a in ('netstat -aon ^| findstr ":8000 " ^| findstr "LISTENING"') do (
-    echo   Port 8000 mesgul (PID %%a) - kapatiliyor...
-    taskkill /F /PID %%a >nul 2>&1
+:: --- Python yorumlayicisini otomatik bul (PATH'te olmasa da calisir) ---
+call "%~dp0scripts\python_env.bat"
+if not defined PYTHON_EXE (
+    echo [HATA] Python bulunamadi.
+    echo        Python 3 kurun  : https://www.python.org/downloads/
+    echo        Ozelse tam yol  : set PYTHON_EXE=C:\tam\yol\python.exe
+    echo.
+    pause
+    exit /b 1
 )
+echo Python : %PYTHON_EXE%
+echo.
+
+:: --- Eski calisan sunuculari temizle (port cakismasini onler) ---
+:: NOT: Blok icindeki echo metinlerinde PARANTEZ kullanmayin; cmd ")" isaretini
+::      blogu kapatan karakter sayar ve "- was unexpected at this time." hatasi verir.
+echo Eski sunucular kontrol ediliyor...
+for %%P in (8000 3000) do (
+    for /f "tokens=5" %%a in ('netstat -aon ^| findstr ":%%P " ^| findstr "LISTENING"') do (
+        echo   Port %%P mesgul, PID %%a kapatiliyor...
+        taskkill /F /PID %%a >nul 2>&1
+    )
+)
+timeout /t 2 /nobreak >nul
 echo.
 
 :: --- Backend ayri pencerede (kendi basina ayakta kalir) ---
 echo [1/2] Backend baslatiliyor (port 8000)...
-start "17Money Backend" cmd /k "cd /d "%~dp0backend" && set PYTHONPATH=%~dp0backend && python -m uvicorn main:app --host 0.0.0.0 --port 8000"
+start "17Money Backend" cmd /k "cd /d "%~dp0backend" && set PYTHONPATH=%~dp0backend && "%PYTHON_EXE%" -m uvicorn main:app --host 0.0.0.0 --port 8000"
 
 :: Backend ayaga kalkana kadar bekle
 echo       Backend hazirlaniyor...

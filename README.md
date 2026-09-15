@@ -86,6 +86,21 @@ npm start
 
 *Frontend runs on `http://localhost:3000` and reads parameters dynamically from `frontend/.env`.*
 
+### 3.2.1 Windows one-click launchers
+
+| Script | What it does |
+| --- | --- |
+| `BASLAT.bat` | Frees ports `8000`/`3000`, then opens the backend (uvicorn) and the frontend (`npm start`) in two **persistent** windows and opens the browser. |
+| `start.bat` | Same, dev style: backend runs with `--reload`. |
+| `start_frontend.bat` | Starts only the UI (expects the backend to be running). |
+
+All of them resolve the Python interpreter through `scripts\python_env.bat`, so **Python does not need to be on
+`PATH`** (the usual cause of `'python' is not recognized`). The lookup order is: an already-set `%PYTHON_EXE%` →
+the `py -3` launcher → `python` on `PATH` → `%LOCALAPPDATA%\Programs\Python\Python3*\python.exe` (newest first) →
+`%ProgramFiles%\Python3*\python.exe`. If nothing is found, the script prints an install hint and exits with code 1;
+you can always force an interpreter with `set PYTHON_EXE=C:\full\path\python.exe` before launching.
+For the manual commands above, use `py -3` instead of `python` when Python is not on `PATH`.
+
 ### 3.4 Language (TR / EN)
 
 The application supports Turkish and English — the dashboard ships with a bilingual UI (Turkish is the source language, English is the second):
