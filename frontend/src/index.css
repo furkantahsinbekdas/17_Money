@@ -1,0 +1,101 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  /* Zemin katmanları — koyu kömür, mavi değil */
+  --bg: #0a0c10;
+  --bg-panel: #0f1319;
+  --bg-card: #12171f;
+  --bg-inset: #0c1015;
+
+  /* Çizgiler */
+  --line: #1f2835;
+  --line-soft: #161d27;
+
+  /* Metin */
+  --ink: #dce3ed;
+  --ink-dim: #8a96a6;
+  --ink-faint: #57636f;
+
+  /* Marka — terminal amberi */
+  --amber: #e8a33d;
+  --amber-bright: #ffc24b;
+  --amber-dim: #8a6224;
+
+  /* Piyasa renkleri */
+  --up: #27c28a;
+  --up-dim: #14503a;
+  --down: #f0494f;
+  --down-dim: #5c2226;
+  --info: #5b9dd9;
+
+  --font-mono: 'IBM Plex Mono', 'Consolas', monospace;
+  --font-cond: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+}
+
+body {
+  font-family: var(--font-mono);
+  background-color: var(--bg);
+  color: var(--ink);
+  overflow: hidden;
+  height: 100vh;
+  font-size: 13px;
+}
+
+#root {
+  height: 100vh;
+}
+
+/* Panel başlığı — kondanse, büyük harf, amber çizgili */
+.panel-title {
+  font-family: var(--font-cond);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.panel-title::before {
+  content: '';
+  display: inline-block;
+  width: 3px;
+  height: 12px;
+  background: var(--amber);
+}
+
+/* Sayılar her yerde tabular */
+.num {
+  font-variant-numeric: tabular-nums;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-panel);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--line);
+  border: 2px solid var(--bg-panel);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ink-faint);
+}
+
+::selection {
+  background: var(--amber-dim);
+  color: var(--ink);
+}

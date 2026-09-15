@@ -1,0 +1,84 @@
+# ==============================================================================
+# 17Money Algorithm — .gitignore
+# Amaç: sırlar, yerel veritabanları, eğitilmiş modeller, loglar ve kişisel
+# IDE/araç ayarları ASLA depoya girmesin.
+# ==============================================================================
+
+# ------------------------------------------------------------------ SIRLAR/ENV
+# Sıra ÖNEMLİ: git'te SONRA gelen kural kazanır → istisnalar en sonda.
+config/.env
+.env
+.env.*
+*.pem
+*.key
+# Örnek dosyalar depoda KALMALI (sır içermezler)
+!config/.env.example
+!frontend/.env.example
+
+# --------------------------------------------------------- Yerel veritabanları
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+backend/data/
+
+# -------------------------------------------- Eğitilmiş modeller / veri kümeleri
+*.joblib
+*.pkl
+*.pickle
+*.h5
+*.pt
+*.onnx
+*.parquet
+*.feather
+ml/data/*
+ml/models/*
+!ml/data/.gitkeep
+!ml/models/.gitkeep
+
+# ------------------------------------------------------------------------ Loglar
+*.log
+logs/
+nohup.out
+
+# ---------------------------------------------------------- Python / paketler
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ------------------------------------------------------------- Node / React
+node_modules/
+frontend/node_modules/
+frontend/build/
+frontend/dist/
+frontend/.next/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ---------------------------------------------- Editör / IDE / araç ayarları
+.claude/settings.local.json
+.claude/*.local.json
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ------------------------------------------------------------------- İşletim sistemi
+.DS_Store
+Thumbs.db
+
+# ----------------------------------------------------------- Geçici çıktılar
+comp.txt
+imp.txt
+test_yanit.txt
+

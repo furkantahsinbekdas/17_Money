@@ -1,0 +1,73 @@
+.im-table {
+  padding: 6px 14px 10px;
+}
+
+.im-row {
+  display: grid;
+  grid-template-columns: 1.3fr 0.9fr 0.6fr 1fr 0.5fr;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+  font-size: 11.5px;
+}
+
+.im-row + .im-row {
+  border-top: 1px solid var(--line-soft);
+}
+
+.im-head {
+  font-family: var(--font-cond);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--ink-faint);
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 5px;
+}
+
+.im-name {
+  color: var(--ink);
+}
+
+.im-r {
+  text-align: right;
+}
+
+.im-c {
+  text-align: center;
+}
+
+.im-row .up { color: var(--up); }
+.im-row .down { color: var(--down); }
+
+.corr-bar {
+  position: relative;
+  height: 7px;
+  background: var(--bg-inset);
+  border: 1px solid var(--line-soft);
+}
+
+.corr-mid {
+  position: absolute;
+  left: 50%;
+  top: -2px;
+  bottom: -2px;
+  width: 1px;
+  background: var(--ink-faint);
+}
+
+.corr-fill {
+  position: absolute;
+  top: 1px;
+  bottom: 1px;
+}
+
+.corr-fill.pos { background: var(--up); }
+.corr-fill.neg { background: var(--down); }
+
+.im-note {
+  margin-top: 8px;
+  font-size: 10px;
+  color: var(--ink-faint);
+  line-height: 1.5;
+}

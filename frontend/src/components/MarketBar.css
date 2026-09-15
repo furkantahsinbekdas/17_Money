@@ -1,0 +1,135 @@
+.market-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  height: 46px;
+  padding: 0 16px;
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--line);
+  flex-shrink: 0;
+}
+
+.mb-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.05;
+}
+
+.brand-name {
+  font-family: var(--font-cond);
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--amber);
+}
+
+.brand-sub {
+  font-family: var(--font-cond);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  color: var(--ink-faint);
+}
+
+.price-block {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.price-symbol {
+  font-family: var(--font-cond);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+}
+
+.price-value {
+  font-size: 19px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.price-change {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.price-change.up { color: var(--up); }
+.price-change.down { color: var(--down); }
+
+.mb-center {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  overflow: hidden;
+}
+
+.mb-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding: 0 12px;
+  border-left: 1px solid var(--line-soft);
+  line-height: 1.25;
+}
+
+.mbi-label {
+  font-family: var(--font-cond);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--ink-faint);
+}
+
+.mbi-value {
+  font-size: 12.5px;
+  color: var(--ink-dim);
+}
+
+.mb-item.up .mbi-value { color: var(--up); }
+.mb-item.down .mbi-value { color: var(--down); }
+.mb-item.amber .mbi-value { color: var(--amber-bright); }
+
+.mb-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.engine-badge {
+  font-family: var(--font-cond);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--amber);
+  border: 1px solid var(--amber-dim);
+  padding: 3px 9px;
+}
+
+.last-update {
+  font-size: 11px;
+  color: var(--ink-faint);
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--up);
+  box-shadow: 0 0 6px var(--up);
+  animation: blink 2.4s infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}

@@ -1,0 +1,36 @@
+.model-picker {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.model-picker-label {
+  font-family: var(--font-cond);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--ink-faint);
+}
+
+.model-picker-select {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--amber);
+  font-family: var(--font-cond);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 3px 6px;
+  cursor: pointer;
+  outline: none;
+}
+
+.model-picker-select option {
+  background: var(--bg);
+  color: var(--ink);
+}
+
+.model-picker-select:disabled {
+  opacity: 0.5;
+  cursor: default;
+}

@@ -1,0 +1,320 @@
+.forecast-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- Gauge --- */
+.gauge-wrap {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px 6px;
+}
+
+.gauge-svg {
+  width: 168px;
+  flex-shrink: 0;
+}
+
+.gz {
+  fill: none;
+  stroke-width: 9;
+}
+
+.gz-down { stroke: var(--down-dim); }
+.gz-flat { stroke: var(--line); }
+.gz-up { stroke: var(--up-dim); }
+
+.g-tick {
+  stroke: var(--ink-faint);
+  stroke-width: 1;
+}
+
+.g-lbl {
+  fill: var(--ink-faint);
+  font-size: 9px;
+  font-family: var(--font-mono);
+}
+
+.g-needle {
+  fill: var(--amber);
+}
+
+.g-hub {
+  fill: var(--bg-inset);
+  stroke: var(--amber);
+  stroke-width: 1.5;
+}
+
+.gauge-readout {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.gauge-value {
+  font-size: 34px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.gauge-dir {
+  font-family: var(--font-cond);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+}
+
+.gauge-strength {
+  font-size: 10px;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.up { color: var(--up); }
+.down { color: var(--down); }
+.flat { color: var(--ink-dim); }
+
+.mtf-badge {
+  font-family: var(--font-cond);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  padding: 2px 8px;
+  border: 1px solid;
+}
+
+.mtf-badge.ok {
+  color: var(--up);
+  border-color: var(--up-dim);
+}
+
+.mtf-badge.warn {
+  color: var(--amber-bright);
+  border-color: var(--amber-dim);
+}
+
+/* --- Vade vektörleri --- */
+.vec-list {
+  padding: 6px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  border-top: 1px solid var(--line-soft);
+}
+
+.vec-row {
+  display: grid;
+  grid-template-columns: 92px 1fr 58px;
+  align-items: center;
+  gap: 10px;
+}
+
+.vec-name {
+  font-family: var(--font-cond);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--ink-dim);
+}
+
+.vec-bar {
+  position: relative;
+  height: 8px;
+  background: var(--bg-inset);
+  border: 1px solid var(--line-soft);
+}
+
+.vec-bar-mid {
+  position: absolute;
+  left: 50%;
+  top: -2px;
+  bottom: -2px;
+  width: 1px;
+  background: var(--ink-faint);
+}
+
+.vec-bar-fill {
+  position: absolute;
+  top: 1px;
+  bottom: 1px;
+}
+
+.vec-bar-fill.up { background: var(--up); }
+.vec-bar-fill.down { background: var(--down); }
+.vec-bar-fill.flat { background: var(--ink-faint); }
+
+.vec-val {
+  font-size: 12px;
+  font-weight: 600;
+  text-align: right;
+}
+
+/* --- 24s aralık --- */
+.range-block {
+  padding: 10px 14px;
+  border-top: 1px solid var(--line-soft);
+}
+
+.range-caption {
+  font-family: var(--font-cond);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--ink-dim);
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 7px;
+}
+
+.range-atr {
+  color: var(--ink-faint);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0;
+}
+
+.range-bar {
+  position: relative;
+  height: 10px;
+  background: linear-gradient(90deg, var(--down-dim), var(--bg-inset) 40%, var(--bg-inset) 60%, var(--up-dim));
+  border: 1px solid var(--line-soft);
+}
+
+.range-marker {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  width: 2px;
+  background: var(--amber-bright);
+  transform: translateX(-1px);
+}
+
+.range-ends {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  margin-top: 4px;
+}
+
+.range-now {
+  color: var(--amber-bright);
+  font-weight: 600;
+}
+
+/* --- AI tahmin --- */
+.ai-fc-section {
+  border-top: 1px solid var(--line-soft);
+  padding: 10px 14px 12px;
+}
+
+.ai-fc-btn {
+  width: 100%;
+  font-family: var(--font-cond);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  padding: 8px;
+  background: transparent;
+  color: var(--amber);
+  border: 1px solid var(--amber-dim);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.ai-fc-btn:hover:not(:disabled) {
+  background: var(--amber);
+  color: var(--bg);
+}
+
+.ai-fc-btn:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
+.ai-fc-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 6px;
+}
+
+.ai-fc-error {
+  margin-top: 8px;
+  font-size: 11px;
+  color: var(--down);
+  line-height: 1.5;
+}
+
+.ai-fc-result {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ai-fc-headline {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.ai-fc-dir {
+  font-family: var(--font-cond);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.ai-fc-prob {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--amber-bright);
+}
+
+.ai-fc-horizon {
+  font-size: 10px;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+}
+
+.ai-fc-range {
+  font-size: 11.5px;
+  color: var(--ink-dim);
+}
+
+.ai-fc-text {
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--ink);
+}
+
+.ai-fc-text.dim {
+  color: var(--ink-dim);
+}
+
+.ai-fc-horizons {
+  font-size: 11px;
+  line-height: 1.7;
+  color: var(--ink-dim);
+  border-left: 2px solid var(--line);
+  padding-left: 8px;
+}
+
+.ai-fc-horizons b {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.ai-fc-risks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.risk-tag {
+  font-size: 10px;
+  color: var(--amber-bright);
+  border: 1px solid var(--amber-dim);
+  padding: 2px 6px;
+}

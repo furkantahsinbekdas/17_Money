@@ -1,0 +1,358 @@
+.signal-card {
+  background: var(--bg-card);
+  border: 1px solid var(--line-soft);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.signal-card.empty {
+  align-items: stretch;
+}
+
+.signal-empty-text {
+  font-size: 11px;
+  color: var(--ink-faint);
+  line-height: 1.6;
+}
+
+.quick-analysis {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.quick-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  padding: 3px 0;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.quick-label { color: var(--ink-faint); }
+.quick-value { color: var(--ink-dim); }
+
+/* Üst satır */
+.signal-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.signal-badge {
+  font-family: var(--font-cond);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  padding: 3px 12px;
+}
+
+.signal-badge.long {
+  background: var(--up);
+  color: var(--bg);
+}
+
+.signal-badge.short {
+  background: var(--down);
+  color: var(--bg);
+}
+
+.signal-badge.bekle {
+  background: transparent;
+  border: 1px solid var(--ink-faint);
+  color: var(--ink-dim);
+}
+
+.regime-tag {
+  font-family: var(--font-cond);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.signal-confidence {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.conf-bar {
+  width: 64px;
+  height: 7px;
+  background: var(--bg-inset);
+  border: 1px solid var(--line-soft);
+}
+
+.conf-fill {
+  height: 100%;
+}
+
+.conf-fill.high { background: var(--up); }
+.conf-fill.mid { background: var(--amber); }
+.conf-fill.low { background: var(--down); }
+
+.conf-value {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.signal-trend {
+  font-size: 11.5px;
+  color: var(--ink-dim);
+  line-height: 1.5;
+  border-left: 2px solid var(--amber-dim);
+  padding-left: 8px;
+}
+
+/* Seviyeler */
+.signal-levels {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.level-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 8px;
+  background: var(--bg-inset);
+  border-left: 2px solid;
+  font-size: 12px;
+}
+
+.level-row.entry { border-color: var(--info); }
+.level-row.stop { border-color: var(--down); }
+.level-row.target { border-color: var(--up); }
+
+.level-label {
+  font-family: var(--font-cond);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--ink-faint);
+}
+
+.level-value {
+  font-weight: 600;
+}
+
+.level-row.entry .level-value { color: var(--info); }
+.level-row.stop .level-value { color: var(--down); }
+.level-row.target .level-value { color: var(--up); }
+
+/* Risk şeridi */
+.risk-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.risk-chip {
+  font-family: var(--font-cond);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  padding: 2px 8px;
+  border: 1px solid var(--line);
+  color: var(--ink-dim);
+}
+
+.signal-analysis {
+  font-size: 11.5px;
+  line-height: 1.65;
+  color: var(--ink);
+}
+
+/* Senaryolar */
+.scenarios {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.scenario {
+  padding: 7px 9px;
+  background: var(--bg-inset);
+  border-top: 2px solid;
+}
+
+.scenario.bull { border-color: var(--up); }
+.scenario.bear { border-color: var(--down); }
+
+.sc-title {
+  font-family: var(--font-cond);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.scenario.bull .sc-title { color: var(--up); }
+.scenario.bear .sc-title { color: var(--down); }
+
+.scenario p {
+  font-size: 10.5px;
+  line-height: 1.55;
+  color: var(--ink-dim);
+}
+
+/* Geçersizlik */
+.invalidation {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  font-size: 11px;
+  color: var(--ink-dim);
+  background: var(--bg-inset);
+  border-left: 2px solid var(--amber);
+  padding: 6px 9px;
+  line-height: 1.5;
+}
+
+.inv-label {
+  font-family: var(--font-cond);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--amber-bright);
+  flex-shrink: 0;
+  font-size: 10.5px;
+}
+
+/* Gösterge analizi */
+.ind-toggle {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  border-top: 1px solid var(--line-soft);
+  color: var(--ink-dim);
+  font-family: var(--font-cond);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  padding: 7px 0 2px;
+  cursor: pointer;
+}
+
+.ind-toggle:hover { color: var(--amber-bright); }
+
+.ind-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-top: 6px;
+}
+
+.ind-item {
+  border-left: 1px solid var(--line);
+  padding-left: 8px;
+}
+
+.ind-head {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.ind-dot {
+  width: 7px;
+  height: 7px;
+  flex-shrink: 0;
+}
+
+.ind-dot.up { background: var(--up); }
+.ind-dot.down { background: var(--down); }
+.ind-dot.flat { background: var(--ink-faint); }
+
+.ind-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.ind-state {
+  font-size: 10.5px;
+  color: var(--ink-faint);
+}
+
+.ind-behavior {
+  font-size: 10.5px;
+  line-height: 1.55;
+  color: var(--ink-dim);
+  margin-top: 2px;
+}
+
+/* Kritik seviyeler */
+.signal-levels-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.level-tag {
+  font-size: 10.5px;
+  padding: 2px 7px;
+  border: 1px solid var(--line);
+  color: var(--ink-dim);
+}
+
+/* Uyarılar */
+.warnings {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.warning-row {
+  font-size: 10.5px;
+  color: var(--amber-bright);
+  line-height: 1.5;
+}
+
+/* Derin araştırma */
+.research-details summary {
+  font-family: var(--font-cond);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--info);
+  cursor: pointer;
+  padding: 4px 0;
+}
+
+.research-body {
+  font-size: 11px;
+  line-height: 1.65;
+  color: var(--ink-dim);
+  white-space: pre-wrap;
+  margin-top: 6px;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.research-sources {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-top: 8px;
+}
+
+.research-sources a {
+  font-size: 10.5px;
+  color: var(--info);
+  text-decoration: none;
+}
+
+.research-sources a:hover { text-decoration: underline; }
+
+.error-card .signal-analysis {
+  color: var(--down);
+}
