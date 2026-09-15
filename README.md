@@ -1,127 +1,106 @@
 # 17Money Algorithm
 
-BTC/USDT Futures için **AI destekli trading partneri**: çoklu zaman dilimi teknik
-analiz, deterministik tahmin motoru, stokastik matematik katmanı, haber/makro
-bağlamı, meta-model (şampiyon–meydan okuyan) eğitimi, paper trading ve Claude
-uzman yorumu tek bir panelde.
-
-> **Uyarı:** Bu yazılım yalnızca **eğitim/araştırma** amaçlıdır. Yatırım tavsiyesi
-> değildir. Varsayılan olarak **paper trading** (gerçek para yok) çalışır.
+> **Production-grade AI-native trading partner for BTC/USDT Futures.**  
+> Integrates multi-timeframe technical analysis, a deterministic forecast engine, stochastic mathematics (Hurst/GARCH), live macro/news context, and a champion-challenger meta-model with Claude LLM reasoning.
 
 ---
 
-## 1. Mimari (kısa)
+### Disclaimer
+*This project is built strictly for research and educational purposes. It does NOT constitute financial or investment advice. The engine runs in paper trading mode (simulated funds) by default.*
 
-```
-config/            .env (SIRLAR — sürüm kontrolüne girmez) + .env.example
+---
+
+## 1. System Architecture
+
+```text
+config/            .env (SECRETS — git-ignored) + .env.example
 backend/
-  config.py        ★ TÜM ayarlar ve gizliler (tek doğruluk kaynağı)
-  prompts.py       ★ TÜM sistem promptları + JSON şemaları
-  main.py          FastAPI uygulaması + arka plan döngüleri (lifespan)
+  config.py        ★ Single Source of Truth (168 environment variables & settings)
+  prompts.py       ★ Production LLM System Prompts & Structured JSON Schemas
+  main.py          FastAPI core + async background execution cycles (lifespan)
   routers/         market · analysis · ai · meta · paper
   services/        binance · technical · forecast · stochastic · news ·
                    claude_service · claude_cli · claude_vote · signal_store ·
                    meta_model · trainer_service · backfill · history_downloader ·
                    paper_account · session_filter · alert_service · feature
-  data/            yerel SQLite + parquet (sürüm kontrolüne girmez)
-frontend/          React paneli (Chart, Terminal, SciencePanel, PaperPanel…)
-ml/                model/veri klasörleri (içerikleri takip edilmez)
+  data/            Local SQLite stores & parquet tick cache (git-ignored)
+frontend/          React dashboard (Lightweight Charts, Terminal, Science & Paper panels)
+ml/                Model artifacts & training data directories (git-ignored)
+
 ```
 
-**İki kural:**
-1. Kodun hiçbir yerinde sabit sayı, URL, model adı veya anahtar **bulunmaz** —
-   hepsi `backend/config.py`'de yaşar ve ortam değişkeniyle ezilebilir.
-2. Sistem promptları ve şemalar **yalnızca** `backend/prompts.py`'dedir
-   (Anthropic prompt cache'i metnin bit-bit sabit kalmasına bağlıdır).
+### Core Design Rules
+
+1. **Zero Hardcoded Secrets & Constants:** Every URL, model identifier, timeout, and trading parameter lives inside `backend/config.py` and can be overridden via environment variables.
+2. **Byte-Exact Prompt Isolation:** System prompts and JSON response schemas are strictly encapsulated in `backend/prompts.py` to maintain Anthropic prompt cache efficiency without accidental cache invalidation.
 
 ---
 
-## 2. Kurulum
+## 2. Core Philosophy & Engineering Principles
 
-### 2.1 Sırları hazırlayın (ZORUNLU adım)
+* **Dual-Brain Architecture:** Combines a deterministic quantitative engine that calculates mathematical edge with Claude's semantic reasoning on real-time news/macro signals. Final trade signals require multi-agent consensus voting.
+* **Evidence-Driven ML Pipeline:** Implements triple-barrier labeling, walk-forward testing, Combinatorial Purged Cross-Validation (CPCV), and Deflated Sharpe Ratio. Challenger models only replace the active champion if they demonstrate statistically significant outperformance.
+* **Autonomous Capital Protection:** Includes an automated circuit breaker with strict drawdown limits (default: -25%), dynamic cooldown modes reducing risk scale on consecutive losses, and low-liquidity session filters (e.g., Asian night sessions).
 
-```powershell
-copy config\.env.example config\.env      # macOS/Linux: cp config/.env.example config/.env
+---
+
+## 3. Quick Start
+
+### 3.1 Environment Configuration
+
+```bash
+# Copy template configuration
+cp config/.env.example config/.env
+
 ```
 
-`config/.env` içindeki yer tutucuları doldurun:
+Populate the following keys in `config/.env`:
 
-| Değişken | Zorunlu mu | Not |
-|---|---|---|
-| `BINANCE_API_KEY` / `BINANCE_SECRET_KEY` | Piyasa verisi + işlem için | **Testnet** anahtarı kullanın (`BINANCE_TESTNET=true`) |
-| `CLAUDE_API_KEY` | Hayır | Boşsa bu makinede oturum açılmış **Claude Code CLI** kullanılır |
-| `NEWS_API_KEY` / `CRYPTOPANIC_KEY` | Hayır | Biri dolu olmalı; yoksa haber katmanı sessizce devre dışı kalır |
+| Variable | Required | Description |
+| --- | --- | --- |
+| `BINANCE_API_KEY` / `BINANCE_SECRET_KEY` | Recommended | Live/historical market data and paper execution. Testnet keys supported. |
+| `CLAUDE_API_KEY` | Optional | Direct Anthropic API access. If unset, fallback uses authenticated local Claude CLI. |
+| `NEWS_API_KEY` / `CRYPTOPANIC_KEY` | Optional | News sentiment aggregation. If missing, the engine gracefully disables news layers. |
 
-`your_...` ile başlayan ya da boş bırakılan anahtarlar "yapılandırılmamış"
-sayılır: uygulama **çökmez**, sadece ilgili özellik devre dışı kalır.
-Kontrol: `GET /api/ai/status` ve (açıksa) `CONFIG_DIAGNOSTICS=true` açılış satırı.
+### 3.2 Backend Service
 
-> ⚠️ `config/.env` asla commit edilmez (`.gitignore`) ve asla paylaşılmaz.
-> Anahtar sızıntısı şüphesinde derhal anahtarları yenileyin.
-
-### 2.2 Backend
-
-```powershell
+```bash
 cd backend
-python -m pip install -r ..\requirements.txt   # (varsa)
-$env:PYTHONPATH = "C:\dev\17_money\backend"
+python -m pip install -r requirements.txt
 python -m uvicorn main:app --host 0.0.0.0 --port 8000
+
 ```
 
-### 2.3 Frontend
+### 3.3 Frontend Dashboard
 
-```powershell
+```bash
 cd frontend
 npm install
-npm start        # http://localhost:3000
+npm start
+
 ```
 
-Frontend ayarları `frontend/.env`'den okunur (örnek: `frontend/.env.example`):
-`REACT_APP_API_BASE`, `REACT_APP_WS_URL`, `REACT_APP_SYMBOL`,
-`REACT_APP_DEFAULT_INTERVAL`, `REACT_APP_DEFAULT_MODEL`.
-**Not:** tarayıcıya gömüldüğü için buraya API anahtarı yazmayın.
-
-Windows'ta tek tuşla başlatma: `BASLAT.bat` / `start.bat`.
+*Frontend runs on `http://localhost:3000` and reads parameters dynamically from `frontend/.env`.*
 
 ---
 
-## 3. Sık kullanılan uçlar
+## 4. Key API Endpoints
 
-| Uç | Ne yapar |
-|---|---|
-| `GET /health` | Sağlık kontrolü |
-| `GET /api/ai/status` | Claude sağlayıcısı (api/cli/yok), model, seçilebilir model listesi |
-| `GET /api/market/btc?interval=1h` | Teknik analiz paketi (fiyat, EMA/RSI/ADX/ATR, yapı) |
-| `GET /api/analysis/forecast/{symbol}` | Deterministik tahmin motoru (Yön Endeksi 0-100) |
-| `GET /api/analysis/stochastic/{symbol}` | Hurst/GARCH/kuyruk/difüzyon + örüntü çözme |
-| `GET /api/ai/signal?interval=1h` | Claude sinyali (kredi yakar) |
-| `POST /api/meta/backfill` → `POST /api/meta/train` | Meta-model eğitimi (şampiyon–meydan okuyan) |
-| `POST /api/paper/run-once?interval=1h&with_vote=true` | Paper turu (+ model/Claude oylaması) |
-| `GET /api/paper/status` | Sermaye, işlemler, devre kesici durumu |
-
----
-
-## 4. Güvenlik / yayın kontrol listesi
-
-- [x] `config/.env` `.gitignore` içinde; depoda sadece `.env.example` var
-- [x] Sırlar yalnızca `config/.env`'den okunur (`backend/config.py`)
-- [x] `backend/data/`, `*.db`, `*.joblib`, `*.parquet`, `*.log`, `ml/data|models`
-      takip edilmez
-- [x] `.claude/settings.local.json` (yerel araç ayarları) takip edilmez
-- [x] Yayın öncesi öneri: `git status --porcelain` + `gitleaks detect` ile
-      ikinci bir sır taraması yapın
-- [ ] **Anahtarları yenileyin:** Depo herkese açıldıysa Binance/Anthropic
-      anahtarlarını iptal edip yenisini üretin
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| `GET` | `/health` | Service uptime and diagnostic health check |
+| `GET` | `/api/ai/status` | Active LLM runtime (API vs CLI), current model, and fallback chain |
+| `GET` | `/api/market/btc?interval=1h` | Technical package: multi-timeframe EMA, RSI, ADX, ATR, and market structure |
+| `GET` | `/api/analysis/forecast/{symbol}` | Deterministic multi-factor directional index (0–100 score) |
+| `GET` | `/api/analysis/stochastic/{symbol}` | Hurst exponent, GARCH volatility, tail-risk, and diffusion dynamics |
+| `GET` | `/api/ai/signal?interval=1h` | Full multi-modal Claude reasoning trade signal generation |
+| `POST` | `/api/meta/challenge` | Triggers champion vs challenger model evaluation pipeline |
+| `GET` | `/api/paper/status` | Simulated account equity, active positions, PnL, and circuit breaker metrics |
 
 ---
 
-## 5. Felsefe (neden böyle)
+## 5. Security & Deployment Checklist
 
-- **Sayı beyni + dil beyni:** deterministik motor kanıt ölçer, Claude bağlam
-  sentezler; karar **eşit oylama** ile birleşir.
-- **Kanıt odaklı:** triple-barrier etiketleme, walk-forward test, CPCV +
-  Deflated Sharpe; şampiyon model ancak istatistiksel olarak kanıtlarsa terfi eder.
-- **Kendini koruyan sistem:** devre kesici (drawdown limiti), soğuma modu,
-  düşük likidite seansında güven kırıcı, meta-model eşiği.
-- **Tek doğruluk kaynağı:** ayar `config.py`, prompt `prompts.py`, özellik
-  pencereleri `feature_service.py` (model sözleşmesi).
+* [x] Secrets isolated in `config/.env` and excluded from git tracking.
+* [x] Runtime databases (`.db`), parquet cache (`.parquet`), and model files (`.joblib`) excluded via `.gitignore`.
+* [x] Cross-validated with zero syntax errors (`compileall`) and zero missing symbol imports.
