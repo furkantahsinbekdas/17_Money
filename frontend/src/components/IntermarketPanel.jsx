@@ -1,5 +1,6 @@
 import React from 'react';
 import './IntermarketPanel.css';
+import { t } from '../i18n';
 
 /* VantagePoint tarzı intermarket görünümü:
    BTC'nin ilişkili piyasalarla 90 günlük getiri korelasyonu */
@@ -32,18 +33,18 @@ function IntermarketPanel({ data }) {
   return (
     <div className="panel intermarket-panel">
       <div className="panel-head">
-        <span className="panel-title">Intermarket · 90g Korelasyon</span>
+        <span className="panel-title">{t("Intermarket · 90g Korelasyon")}</span>
       </div>
 
       {!markets ? (
-        <div className="panel-empty">Intermarket verisi yükleniyor…</div>
+        <div className="panel-empty">{t("Intermarket verisi yükleniyor…")}</div>
       ) : (
         <div className="im-table">
           <div className="im-row im-head">
-            <span>PİYASA</span>
-            <span className="im-r">DEĞER</span>
-            <span className="im-r">GÜN%</span>
-            <span className="im-c">KORELASYON</span>
+            <span>{t("PİYASA")}</span>
+            <span className="im-r">{t("DEĞER")}</span>
+            <span className="im-r">{t("GÜN%")}</span>
+            <span className="im-c">{t("KORELASYON")}</span>
             <span className="im-r">r</span>
           </div>
           {Object.entries(markets).map(([key, m]) => {
@@ -63,7 +64,7 @@ function IntermarketPanel({ data }) {
             );
           })}
           <div className="im-note">
-            Pozitif korelasyonlu piyasa düşerken BTC long = ters rüzgar.
+            {t("Pozitif korelasyonlu piyasa düşerken BTC long = ters rüzgar.")}
           </div>
         </div>
       )}

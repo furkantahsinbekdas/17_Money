@@ -1,5 +1,6 @@
 import React from 'react';
 import './IndicatorMatrix.css';
+import { t } from '../i18n';
 
 /* Gösterge Konsensüs Matrisi — her göstergenin her zaman dilimindeki yönü.
    Hücre rengi skora göre: yeşil (boğa) / kırmızı (ayı) / gri (nötr). */
@@ -35,8 +36,8 @@ function IndicatorMatrix({ forecast }) {
   if (!detail) {
     return (
       <div className="panel matrix-panel">
-        <div className="panel-head"><span className="panel-title">Gösterge Konsensüsü</span></div>
-        <div className="panel-empty">Veri bekleniyor…</div>
+        <div className="panel-head"><span className="panel-title">{t("Gösterge Konsensüsü")}</span></div>
+        <div className="panel-empty">{t("Veri bekleniyor…")}</div>
       </div>
     );
   }
@@ -53,11 +54,11 @@ function IndicatorMatrix({ forecast }) {
   return (
     <div className="panel matrix-panel">
       <div className="panel-head">
-        <span className="panel-title">Gösterge Konsensüsü</span>
+        <span className="panel-title">{t("Gösterge Konsensüsü")}</span>
         <div className="matrix-legend">
-          <span className="lg-cell up-2" /> boğa
-          <span className="lg-cell zero" /> nötr
-          <span className="lg-cell down-2" /> ayı
+          <span className="lg-cell up-2" /> {t("boğa")}
+          <span className="lg-cell zero" /> {t("nötr")}
+          <span className="lg-cell down-2" /> {t("ayı")}
         </div>
       </div>
 
@@ -65,29 +66,32 @@ function IndicatorMatrix({ forecast }) {
         <div className="mx-row mx-head">
           <span className="mx-name" />
           {TFS.map(tf => <span key={tf} className="mx-tf">{tf.toUpperCase()}</span>)}
-          <span className="mx-tf mx-endeks">ENDEKS</span>
+          <span className="mx-tf mx-endeks">{t("ENDEKS")}</span>
         </div>
 
-        {Object.entries(INDICATOR_LABELS).map(([key, label]) => (
-          <div className="mx-row" key={key}>
-            <span className="mx-name">{label}</span>
-            {TFS.map(tf => {
-              const k = byTf[tf]?.[key];
-              return (
-                <span
-                  key={tf}
-                  className={`mx-cell ${cellClass(k?.skor)}`}
-                  title={k ? `${label} · ${tf}\nskor: ${k.skor}\n${k.detay}` : '—'}
-                />
-              );
-            })}
-            <span className="mx-endeks-spacer" />
-          </div>
-        ))}
+        {Object.entries(INDICATOR_LABELS).map(([key, rawLabel]) => {
+          const label = t(rawLabel);
+          return (
+            <div className="mx-row" key={key}>
+              <span className="mx-name">{label}</span>
+              {TFS.map(tf => {
+                const k = byTf[tf]?.[key];
+                return (
+                  <span
+                    key={tf}
+                    className={`mx-cell ${cellClass(k?.skor)}`}
+                    title={k ? `${label} · ${tf}\n${t('skor')}: ${k.skor}\n${k.detay}` : '—'}
+                  />
+                );
+              })}
+              <span className="mx-endeks-spacer" />
+            </div>
+          );
+        })}
 
         {/* TF toplam endeks satırı */}
         <div className="mx-row mx-total">
-          <span className="mx-name">TF ENDEKSİ</span>
+          <span className="mx-name">{t("TF ENDEKSİ")}</span>
           {TFS.map(tf => {
             const e = detail[tf]?.endeks;
             const cls = e >= 55 ? 'up' : e <= 45 ? 'down' : 'flat';

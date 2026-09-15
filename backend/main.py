@@ -8,6 +8,7 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 
 import config
+from i18n import I18nMiddleware
 from routers import market, analysis, ai, meta, paper
 from services.binance_service import BinanceService
 from services.technical import TechnicalService
@@ -84,6 +85,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# i18n: ?lang=tr|en, X-Lang veya Accept-Language başlığına göre kullanıcıya
+# görünen düz metinleri çevirir (makine değerleri dokunulmaz — arayüz tv() çevirir).
+app.add_middleware(I18nMiddleware)
 
 app.include_router(market.router)
 app.include_router(analysis.router)

@@ -8,6 +8,8 @@
 ### Disclaimer
 *This project is built strictly for research and educational purposes. It does NOT constitute financial or investment advice. The engine runs in paper trading mode (simulated funds) by default.*
 
+Status: Active Research Prototype (Alpha / Paper-Trading Engine)
+
 ---
 
 ## 1. System Architecture
@@ -81,6 +83,23 @@ npm start
 ```
 
 *Frontend runs on `http://localhost:3000` and reads parameters dynamically from `frontend/.env`.*
+
+### 3.4 Language (TR / EN)
+
+The dashboard ships with a bilingual UI (Turkish is the source language, English is the second):
+
+* **Toggle:** `TR | EN` switch in the top market bar. The choice is persisted in `localStorage`
+  (`17money.lang`) and applied on the next visit; `REACT_APP_DEFAULT_LANG=tr|en` sets the first-run
+  default (otherwise the browser language decides).
+* **Frontend layer (`frontend/src/i18n.js`):** `t()` translates UI strings (`i18n/en.json`),
+  `tv()` translates machine values coming from the API (`i18n/values.json`, e.g. `yükseliş → uptrend`).
+* **Backend layer (`backend/i18n.py`):** the `I18nMiddleware` localizes user-visible prose
+  (comments, verdicts, reasons) in JSON responses. The language is taken from `?lang=tr|en`,
+  the `X-Lang` header (set globally by the frontend), or `Accept-Language`.
+  Short machine values (`BEKLE`, `yukarı`, `güçlü_trend`, …) are **never** translated server-side so
+  that client-side comparisons stay valid — they are localized in the UI through `tv()`.
+* **LLM output language:** for `en` requests the system prompts for signals/deep research/chat get an
+  output-language note, so Claude writes its analysis in English while JSON enums stay schema-bound.
 
 ---
 

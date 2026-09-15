@@ -3,11 +3,15 @@ import axios from 'axios';
 import SignalCard from './SignalCard';
 import ModelPicker, { shortLabel } from './ModelPicker';
 import './Terminal.css';
+import { t, tv } from '../i18n';
 
-const WELCOME = { role: 'assistant', content: '17Money uzman terminali aktif. Piyasa, kurulum veya risk hakkında soru sorun — gerekirse web araştırması yaparım.' };
+const welcome = () => ({
+  role: 'assistant',
+  content: t('17Money uzman terminali aktif. Piyasa, kurulum veya risk hakkında soru sorun — gerekirse web araştırması yaparım.'),
+});
 
 function Terminal({ technicalData, apiBase, aiStatus, refreshStatus, model, setModel }) {
-  const [messages, setMessages] = useState([WELCOME]);
+  const [messages, setMessages] = useState([welcome()]);
   const [input, setInput] = useState('');
   const [sending, setSending] = useState(false);
   const [signal, setSignal] = useState(null);
@@ -23,7 +27,8 @@ function Terminal({ technicalData, apiBase, aiStatus, refreshStatus, model, setM
   }, [messages]);
 
   const flagIfAuth = (detail) => {
-    if (/giriş|login|kullanım hakkı|credit/i.test(detail || '')) setNeedsLogin(true);
+    // Backend TR veya EN dönebilir (X-Lang) — iki dildeki işaretleri tara.
+    if (/giriş|login|kullanım hakkı|credit|access|api[_ -]?key/i.test(detail || '')) setNeedsLogin(true);
   };
 
   const fetchSignal = async (deep = false) => {
@@ -60,9 +65,9 @@ function Terminal({ technicalData, apiBase, aiStatus, refreshStatus, model, setM
       setMessages(prev => [...prev, { role: 'assistant', content: res.data.response }]);
       setNeedsLogin(false);
     } catch (err) {
-      const detail = err.response?.data?.detail || 'Bağlantı hatası';
+      const detail = err.response?.data?.detail || t('Bağlantı hatası');
       flagIfAuth(detail);
-      setMessages(prev => [...prev, { role: 'assistant', content: `[Hata] ${detail}`, error: true }]);
+      setMessages(prev => [...prev, { role: 'assistant', content: `${t('[Hata]')} ${detail}`, error: true }]);
     }
     setSending(false);
   };
@@ -73,7 +78,7 @@ function Terminal({ technicalData, apiBase, aiStatus, refreshStatus, model, setM
     try {
       await axios.post(`${apiBase}/api/ai/chat/reset`, {}, { timeout: 30000 });
     } catch { /* oturum yoksa da sorun değil */ }
-    setMessages([WELCOME]);
+    setMessages([welcome()]);
     setInput('');
     setResetting(false);
   };
@@ -81,7 +86,7 @@ function Terminal({ technicalData, apiBase, aiStatus, refreshStatus, model, setM
   const handleLogin = async () => {
     if (loginBusy) return;
     const email = window.prompt(
-      'Claude aboneliğinizin olduğu e-posta (giriş sayfasında ön-doldurulur):',
+      t("Claude aboneliğinizin olduğu e-posta (giriş sayfasında ön-doldurulur):"),
       'furkantahsinb@gmail.com'
     );
     if (email === null) return;
@@ -102,9 +107,8 @@ function Terminal({ technicalData, apiBase, aiStatus, refreshStatus, model, setM
           setMessages(prev => [...prev, {
             role: 'assistant',
             content: g.abonelik
-              ? `Giriş algılandı: ${g.email} (${g.abonelik}). Artık mesaj gönderebilirsiniz.`
-              : `Hesap değişti: ${g.email} — ancak bu hesapta abonelik görünmüyor. `
-                + `Abonelikli hesabınız farklıysa tekrar CLAUDE GİRİŞİ'ne basın.`,
+              ? t('Giriş algılandı: {email} ({plan}). Artık mesaj gönderebilirsiniz.', { email: g.email, plan: g.abonelik })
+              : t("Hesap değişti: {email} — ancak bu hesapta abonelik görünmüyor. Abonelikli hesabınız farklıysa tekrar CLAUDE GİRİŞİ'ne basın.", { email: g.email }),
           }]);
           if (g.abonelik) setNeedsLogin(false);
           done = true;
@@ -114,13 +118,11 @@ function Terminal({ technicalData, apiBase, aiStatus, refreshStatus, model, setM
       if (!done) {
         setMessages(prev => [...prev, {
           role: 'assistant',
-          content: 'Giriş hâlâ algılanmadı. Açılan konsol penceresinde "Login successful" '
-            + 'gördüyseniz bir mesaj göndererek deneyin; görmediyseniz tarayıcıdaki '
-            + 'Authorize adımını tamamlayıp tekrar deneyin.',
+          content: t('Giriş hâlâ algılanmadı. Açılan konsol penceresinde "Login successful" gördüyseniz bir mesaj göndererek deneyin; görmediyseniz tarayıcıdaki Authorize adımını tamamlayıp tekrar deneyin.'),
         }]);
       }
     } catch (err) {
-      const detail = err.response?.data?.detail || 'Giriş başlatılamadı';
+      const detail = err.response?.data?.detail || t('Giriş başlatılamadı');
       setMessages(prev => [...prev, { role: 'assistant', content: `[Hata] ${detail}`, error: true }]);
     }
     setLoginBusy(false);
@@ -140,10 +142,10 @@ function Terminal({ technicalData, apiBase, aiStatus, refreshStatus, model, setM
     : giris?.girisli ? (giris?.abonelik ? 'ok' : 'warn')
     : 'bad';
   const authText = aiStatus == null ? '—'
-    : aiStatus.saglayici === 'api' ? 'API anahtarı'
+    : aiStatus.saglayici === 'api' ? t('API anahtarı')
     : giris?.girisli
-      ? `${giris.email || 'girişli'} · ${giris.abonelik || 'abonelik yok'}`
-      : 'giriş yok';
+      ? `${giris.email || t('girişli')} · ${giris.abonelik ? tv(giris.abonelik) : t('abonelik yok')}`
+      : t('giriş yok');
   const signalLabel = shortLabel(model, aiStatus?.modeller?.[model]);
   const isCli = aiStatus?.saglayici !== 'api';
 
@@ -152,14 +154,14 @@ function Terminal({ technicalData, apiBase, aiStatus, refreshStatus, model, setM
       {/* Uzman Sinyal — SİNYAL + DERİN, altında model seçici */}
       <div className="panel terminal-section">
         <div className="panel-head">
-          <span className="panel-title">Uzman Sinyal</span>
+          <span className="panel-title">{t("Uzman Sinyal")}</span>
           <div className="signal-btns">
             <button className="signal-btn" onClick={() => fetchSignal(false)} disabled={busy}>
-              {signalLoading ? `${signalLabel}…` : 'SİNYAL'}
+              {signalLoading ? `${signalLabel}…` : t('SİNYAL')}
             </button>
             <button className="signal-btn deep" onClick={() => fetchSignal(true)} disabled={busy}
-              title="Önce web araştırması yapar, bulguları sinyale besler">
-              {deepLoading ? 'ARAŞTIRIYOR…' : 'DERİN'}
+              title={t("Önce web araştırması yapar, bulguları sinyale besler")}>
+              {deepLoading ? t('ARAŞTIRIYOR…') : t('DERİN')}
             </button>
           </div>
         </div>
@@ -185,9 +187,9 @@ function Terminal({ technicalData, apiBase, aiStatus, refreshStatus, model, setM
             className="reset-btn"
             onClick={resetChat}
             disabled={resetting || sending}
-            title="Sohbeti ve kalıcı oturumu sıfırla"
+            title={t("Sohbeti ve kalıcı oturumu sıfırla")}
           >
-            {resetting ? 'SIFIRLANIYOR…' : '⟲ SOHBETİ SIFIRLA'}
+            {resetting ? t('SIFIRLANIYOR…') : t('⟲ SOHBETİ SIFIRLA')}
           </button>
         </div>
         <div className="chat-messages">
@@ -200,7 +202,7 @@ function Terminal({ technicalData, apiBase, aiStatus, refreshStatus, model, setM
           {sending && (
             <div className="chat-msg assistant">
               <span className="msg-prefix">17M</span>
-              <span className="msg-content typing">düşünüyor…</span>
+              <span className="msg-content typing">{t("düşünüyor…")}</span>
             </div>
           )}
           <div ref={messagesEndRef} />
@@ -213,7 +215,7 @@ function Terminal({ technicalData, apiBase, aiStatus, refreshStatus, model, setM
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Soru sor — uzman gerekirse web'de araştırır…"
+            placeholder={t("Soru sor — uzman gerekirse web'de araştırır…")}
             disabled={sending}
           />
           <button className="send-btn" onClick={sendMessage} disabled={sending || !input.trim()}>
@@ -228,7 +230,7 @@ function Terminal({ technicalData, apiBase, aiStatus, refreshStatus, model, setM
             disabled={sending}
             label="MODEL"
           />
-          <span className={`auth-chip ${authState || ''}`} title={aiStatus?.aciklama || ''}>
+          <span className={`auth-chip ${authState || ''}`} title={tv(aiStatus?.aciklama) || ''}>
             {authText}
           </span>
           {isCli && (
@@ -236,9 +238,9 @@ function Terminal({ technicalData, apiBase, aiStatus, refreshStatus, model, setM
               className={`login-btn ${needsLogin ? 'attention' : ''}`}
               onClick={handleLogin}
               disabled={loginBusy}
-              title="Masaüstünde 'claude auth login' penceresi açar — abonelikli hesabı seçin"
+              title={t("Masaüstünde 'claude auth login' penceresi açar — abonelikli hesabı seçin")}
             >
-              {loginBusy ? 'BEKLENİYOR…' : 'CLAUDE GİRİŞİ'}
+              {loginBusy ? t('BEKLENİYOR…') : t('CLAUDE GİRİŞİ')}
             </button>
           )}
         </div>

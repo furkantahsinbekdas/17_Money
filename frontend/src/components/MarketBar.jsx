@@ -1,5 +1,6 @@
 import React from 'react';
 import './MarketBar.css';
+import { t, getLang, LanguageToggle } from '../i18n';
 
 function MarketBar({ ticker, analysisData, lastUpdate }) {
   const price = ticker?.price;
@@ -35,7 +36,7 @@ function MarketBar({ ticker, analysisData, lastUpdate }) {
       <div className="mb-center">
         <MarketItem label="DXY" value={macro.dxy?.toFixed(2)} />
         <MarketItem label="VIX" value={macro.vix?.toFixed(2)} />
-        <MarketItem label="ALTIN" value={macro.gold ? macro.gold.toFixed(0) : null} />
+        <MarketItem label={t("ALTIN")} value={macro.gold ? macro.gold.toFixed(0) : null} />
         <MarketItem label="S&P" value={macro.sp500?.toFixed(0)} />
         <div className={`mb-item ${fgColor}`}>
           <span className="mbi-label">F&G</span>
@@ -49,9 +50,11 @@ function MarketBar({ ticker, analysisData, lastUpdate }) {
 
       <div className="mb-right">
         <span className="engine-badge">CLAUDE FABLE 5</span>
+        <LanguageToggle />
         {lastUpdate && (
           <span className="last-update num">
-            {lastUpdate.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+            {lastUpdate.toLocaleTimeString(getLang() === 'tr' ? 'tr-TR' : 'en-US',
+              { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
           </span>
         )}
         <span className="status-dot" />

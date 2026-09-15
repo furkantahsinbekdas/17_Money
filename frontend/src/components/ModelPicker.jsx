@@ -1,5 +1,6 @@
 import React from 'react';
 import './ModelPicker.css';
+import { t, tv } from '../i18n';
 
 /**
  * Araç bazlı model seçici. `models` = {id: aciklama} (status'tan gelir).
@@ -17,7 +18,7 @@ export function shortLabel(id, desc) {
 function ModelPicker({ models, value, onChange, disabled, label = 'MODEL' }) {
   const entries = Object.entries(models || { [value]: '' });
   return (
-    <label className="model-picker" title={models?.[value] || 'Model seç'}>
+    <label className="model-picker" title={tv(models?.[value]) || t('Model seç')}>
       <span className="model-picker-label">{label}</span>
       <select
         className="model-picker-select"
@@ -26,7 +27,7 @@ function ModelPicker({ models, value, onChange, disabled, label = 'MODEL' }) {
         disabled={disabled}
       >
         {entries.map(([id, desc]) => (
-          <option key={id} value={id} title={desc}>{shortLabel(id, desc)}</option>
+          <option key={id} value={id} title={tv(desc)}>{shortLabel(id, desc)}</option>
         ))}
       </select>
     </label>

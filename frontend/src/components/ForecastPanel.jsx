@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import ModelPicker, { shortLabel } from './ModelPicker';
 import './ForecastPanel.css';
+import { t, tv } from '../i18n';
 
 /* Yön Endeksi gauge'u — yarım daire, 0-100 */
 function polar(cx, cy, r, deg) {
@@ -58,7 +59,7 @@ function VectorRow({ name, v }) {
   const cls = YON_CLASS[v.yon] || 'flat';
   return (
     <div className="vec-row">
-      <span className="vec-name">{VADE_LABEL[name]}</span>
+      <span className="vec-name">{t(VADE_LABEL[name])}</span>
       <div className="vec-bar">
         <div className="vec-bar-mid" />
         <div
@@ -81,7 +82,7 @@ function RangeBar({ aralik, price }) {
   const pct = Math.max(2, Math.min(98, ((price - lo) / (hi - lo)) * 100));
   return (
     <div className="range-block">
-      <div className="range-caption">TAHMİNİ 24S ARALIK <span className="range-atr num">ATR1d {aralik.atr_1d?.toLocaleString()}</span></div>
+      <div className="range-caption">{t("TAHMİNİ 24S ARALIK")} <span className="range-atr num">ATR1d {aralik.atr_1d?.toLocaleString()}</span></div>
       <div className="range-bar">
         <div className="range-marker" style={{ left: `${pct}%` }} />
       </div>
@@ -106,7 +107,7 @@ function ForecastPanel({ forecast, apiBase, aiStatus, model, setModel }) {
       const res = await axios.get(`${apiBase}/api/ai/forecast?model=${encodeURIComponent(model)}`, { timeout: 180000 });
       setAiFc(res.data.ai_tahmin);
     } catch (err) {
-      setAiError(err.response?.data?.detail || 'AI tahmin alınamadı');
+      setAiError(err.response?.data?.detail || t('AI tahmin alınamadı'));
     }
     setAiLoading(false);
   };
@@ -116,8 +117,8 @@ function ForecastPanel({ forecast, apiBase, aiStatus, model, setModel }) {
   if (!forecast) {
     return (
       <div className="panel forecast-panel">
-        <div className="panel-head"><span className="panel-title">Tahmin Motoru</span></div>
-        <div className="panel-empty">Tahmin verisi yükleniyor…</div>
+        <div className="panel-head"><span className="panel-title">{t("Tahmin Motoru")}</span></div>
+        <div className="panel-empty">{t("Tahmin verisi yükleniyor…")}</div>
       </div>
     );
   }
@@ -127,9 +128,9 @@ function ForecastPanel({ forecast, apiBase, aiStatus, model, setModel }) {
   return (
     <div className="panel forecast-panel">
       <div className="panel-head">
-        <span className="panel-title">Tahmin Motoru</span>
+        <span className="panel-title">{t("Tahmin Motoru")}</span>
         <span className={`mtf-badge ${forecast.mtf_uyumlu ? 'ok' : 'warn'}`}>
-          {forecast.mtf_uyumlu ? 'MTF UYUMLU' : 'MTF ÇELİŞKİLİ'}
+          {forecast.mtf_uyumlu ? t('MTF UYUMLU') : t('MTF ÇELİŞKİLİ')}
         </span>
       </div>
 
@@ -137,8 +138,8 @@ function ForecastPanel({ forecast, apiBase, aiStatus, model, setModel }) {
         <Gauge value={forecast.yon_endeksi} />
         <div className="gauge-readout">
           <span className={`gauge-value num ${yonCls}`}>{forecast.yon_endeksi?.toFixed(0)}</span>
-          <span className={`gauge-dir ${yonCls}`}>{YON_ICON[forecast.yon]} {forecast.yon?.toUpperCase()}</span>
-          <span className="gauge-strength">{forecast.guc?.replace('_', ' ')}</span>
+          <span className={`gauge-dir ${yonCls}`}>{YON_ICON[forecast.yon]} {tv(forecast.yon)?.toUpperCase()}</span>
+          <span className="gauge-strength">{tv(forecast.guc)?.replace('_', ' ')}</span>
         </div>
       </div>
 
@@ -152,7 +153,7 @@ function ForecastPanel({ forecast, apiBase, aiStatus, model, setModel }) {
 
       <div className="ai-fc-section">
         <button className="ai-fc-btn" onClick={fetchAiForecast} disabled={aiLoading}>
-          {aiLoading ? `${modelLabel} DÜŞÜNÜYOR…` : 'AI TAHMİN ÜRET'}
+          {aiLoading ? `${modelLabel} ${t('DÜŞÜNÜYOR…')}` : t('AI TAHMİN ÜRET')}
         </button>
         <div className="ai-fc-toolbar">
           <ModelPicker
@@ -168,14 +169,14 @@ function ForecastPanel({ forecast, apiBase, aiStatus, model, setModel }) {
           <div className="ai-fc-result">
             <div className="ai-fc-headline">
               <span className={`ai-fc-dir ${YON_CLASS[aiFc.yon] || 'flat'}`}>
-                {YON_ICON[aiFc.yon]} {aiFc.yon?.toUpperCase()}
+                {YON_ICON[aiFc.yon]} {tv(aiFc.yon)?.toUpperCase()}
               </span>
               <span className="ai-fc-prob num">%{aiFc.olasilik}</span>
               <span className="ai-fc-horizon">{aiFc.ufuk}</span>
             </div>
             {aiFc.tahmini_aralik && (
               <div className="ai-fc-range num">
-                AI aralık: <span className="down">{aiFc.tahmini_aralik.dusuk?.toLocaleString()}</span>
+                {t("AI aralık:")} <span className="down">{aiFc.tahmini_aralik.dusuk?.toLocaleString()}</span>
                 {' — '}
                 <span className="up">{aiFc.tahmini_aralik.yuksek?.toLocaleString()}</span>
               </div>
@@ -183,9 +184,9 @@ function ForecastPanel({ forecast, apiBase, aiStatus, model, setModel }) {
             <p className="ai-fc-text">{aiFc.gerekce}</p>
             {aiFc.vade_gorunumu && (
               <div className="ai-fc-horizons">
-                <div><b>Kısa:</b> {aiFc.vade_gorunumu.kisa}</div>
-                <div><b>Orta:</b> {aiFc.vade_gorunumu.orta}</div>
-                <div><b>Uzun:</b> {aiFc.vade_gorunumu.uzun}</div>
+                <div><b>{t("Kısa:")}</b> {aiFc.vade_gorunumu.kisa}</div>
+                <div><b>{t("Orta:")}</b> {aiFc.vade_gorunumu.orta}</div>
+                <div><b>{t("Uzun:")}</b> {aiFc.vade_gorunumu.uzun}</div>
               </div>
             )}
             {aiFc.intermarket_yorum && (

@@ -23,7 +23,18 @@ from prompts import (
     FORECAST_SCHEMA,
     SIGNAL_SCHEMA,
 )
+import i18n
 from services.claude_cli import ClaudeCLI, ClaudeCLIError, parse_json_loose
+
+
+def expert_system_prompt() -> str:
+    """Uzman sistem promptu + istek diline göre çıktı dili notu (EN istekte İngilizce yanıt)."""
+    return i18n.localize_prompt(EXPERT_SYSTEM_PROMPT)
+
+
+def chat_system_prompt() -> str:
+    """Sohbet sistem promptu + istek dili notu."""
+    return i18n.localize_prompt(CHAT_SYSTEM_PROMPT)
 
 
 def _extract_text(response) -> str:
@@ -156,7 +167,7 @@ Güncel/önemli olay varsa ve bağlam eksikse web aramasını kullan.
                 },
                 system=[{
                     "type": "text",
-                    "text": EXPERT_SYSTEM_PROMPT,
+                    "text": expert_system_prompt(),
                     "cache_control": {"type": "ephemeral"},
                 }],
                 messages=[{"role": "user", "content": user_message}],
@@ -165,7 +176,7 @@ Güncel/önemli olay varsa ve bağlam eksikse web aramasını kullan.
         else:
             text = self.cli.complete(
                 prompt=user_message,
-                system_prompt=EXPERT_SYSTEM_PROMPT,
+                system_prompt=expert_system_prompt(),
                 json_schema=SIGNAL_SCHEMA,
                 model=model,
             )
@@ -243,7 +254,7 @@ Deterministik motor sadece gösterge konsensüsünü ölçer — senin görevin 
                 },
                 system=[{
                     "type": "text",
-                    "text": EXPERT_SYSTEM_PROMPT,
+                    "text": expert_system_prompt(),
                     "cache_control": {"type": "ephemeral"},
                 }],
                 messages=[{"role": "user", "content": user_message}],
@@ -252,7 +263,7 @@ Deterministik motor sadece gösterge konsensüsünü ölçer — senin görevin 
         else:
             text = self.cli.complete(
                 prompt=user_message,
-                system_prompt=EXPERT_SYSTEM_PROMPT,
+                system_prompt=expert_system_prompt(),
                 json_schema=FORECAST_SCHEMA,
                 model=model,
             )
@@ -300,7 +311,7 @@ Türkçe yaz. Kaynaklara dayan, spekülasyon yapma."""
         if not self.has_api_key:
             rapor = self.cli.complete(
                 prompt=user_message + prompts.RESEARCH_REPORT_FOOTER,
-                system_prompt=EXPERT_SYSTEM_PROMPT,
+                system_prompt=expert_system_prompt(),
                 web_search=True,
                 model=model,
             )
@@ -318,7 +329,7 @@ Türkçe yaz. Kaynaklara dayan, spekülasyon yapma."""
                 output_config={"effort": "high"},
                 system=[{
                     "type": "text",
-                    "text": EXPERT_SYSTEM_PROMPT,
+                    "text": expert_system_prompt(),
                     "cache_control": {"type": "ephemeral"},
                 }],
                 tools=[{
@@ -424,7 +435,7 @@ Türkçe yaz. Kaynaklara dayan, spekülasyon yapma."""
                 try:
                     env = self.cli.run(
                         prompt=resume_prompt,
-                        system_prompt=CHAT_SYSTEM_PROMPT,
+                        system_prompt=chat_system_prompt(),
                         web_search=True,
                         effort="medium",
                         model=chosen_model,
@@ -449,7 +460,7 @@ Türkçe yaz. Kaynaklara dayan, spekülasyon yapma."""
 
             env = self.cli.run(
                 prompt=prompt,
-                system_prompt=CHAT_SYSTEM_PROMPT,
+                system_prompt=chat_system_prompt(),
                 web_search=True,
                 effort="medium",
                 model=chosen_model,
@@ -474,7 +485,7 @@ Türkçe yaz. Kaynaklara dayan, spekülasyon yapma."""
                 system=[
                     {
                         "type": "text",
-                        "text": CHAT_SYSTEM_PROMPT,
+                        "text": chat_system_prompt(),
                         "cache_control": {"type": "ephemeral"},
                     },
                     {"type": "text", "text": context_block},

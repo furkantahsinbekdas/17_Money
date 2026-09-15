@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import axios from 'axios';
 import './SciencePanel.css';
+import { t, tv } from '../i18n';
 
 /**
  * Bilimsel Veri Paneli — rastgeleliğin matematiği + örüntü çözme.
@@ -63,7 +64,7 @@ function SciencePanel({ apiBase }) {
       );
       setData(res.data);
     } catch (err) {
-      setError(err.response?.data?.detail || 'Bilimsel veri alınamadı');
+      setError(err.response?.data?.detail || t("Bilimsel veri alınamadı"));
     }
     setLoading(false);
   }, [apiBase]);
@@ -114,15 +115,16 @@ function SciencePanel({ apiBase }) {
       const res = await axios.post(`${apiBase}/api/meta/challenge`, {}, { timeout: 60000 });
       const d = res.data || {};
       if (d.terfi) {
-        setChallengeMsg(`✅ TERFİ ETTİ — ${d.neden || 'yeni nesil daha iyi'}`);
+        setChallengeMsg(t("✅ TERFİ ETTİ — {neden}", { neden: tv(d.neden) || tv("yeni nesil daha iyi") }));
       } else if (d.calisti) {
-        setChallengeMsg(`Şampiyon korundu — ${d.neden || 'yeni nesil kanıtlayamadı (normal)'}`);
+        setChallengeMsg(t("Şampiyon korundu — {neden}",
+          { neden: tv(d.neden) || tv("yeni nesil kanıtlayamadı (normal)") }));
       } else {
-        setChallengeMsg('Tur çalıştı, değişiklik yok.');
+        setChallengeMsg(t("Tur çalıştı, değişiklik yok."));
       }
       await fetchTrainer();
     } catch {
-      setChallengeMsg('Tur başlatılamadı (backend?).');
+      setChallengeMsg(t("Tur başlatılamadı (backend?)."));
     }
     setTrainBusy(false);
   };
@@ -149,10 +151,9 @@ function SciencePanel({ apiBase }) {
     <div className="science-panel">
       <div className="sci-header">
         <div>
-          <h2 className="sci-title">Bilimsel Veri — Rastgeleliğin Matematiği</h2>
+          <h2 className="sci-title">{t("Bilimsel Veri — Rastgeleliğin Matematiği")}</h2>
           <p className="sci-subtitle">
-            Fiyatı tahmin etmez; piyasanın <b>ne kadar tahmin edilebilir, ne kadar oynak,
-            hangi rejimde</b> olduğunu bilimsel olarak ölçer. Bachelier · Einstein · GARCH · Fourier · Shannon.
+            {t("Fiyatı tahmin etmez; piyasanın")} <b>{t("ne kadar tahmin edilebilir, ne kadar oynak, hangi rejimde")}</b> {t("olduğunu bilimsel olarak ölçer. Bachelier · Einstein · GARCH · Fourier · Shannon.")}
           </p>
         </div>
         <div className="sci-controls">
@@ -166,7 +167,7 @@ function SciencePanel({ apiBase }) {
             ))}
           </div>
           <button className="sci-run-btn" onClick={() => fetchScience(interval)} disabled={loading}>
-            {loading ? 'HESAPLANIYOR…' : 'ANALİZ ET'}
+            {loading ? t('HESAPLANIYOR…') : t('ANALİZ ET')}
           </button>
         </div>
       </div>
@@ -175,33 +176,33 @@ function SciencePanel({ apiBase }) {
       {trainer && (
         <div className="sci-trainer">
           <div className="sci-trainer-head">
-            <span className="sci-trainer-title">🧠 KENDİNİ EĞİTEN MODEL (Nesil Sistemi)</span>
-            <span className="sci-gen-badge">NESİL {trainer.nesil ?? 0}</span>
+            <span className="sci-trainer-title">{t("🧠 KENDİNİ EĞİTEN MODEL (Nesil Sistemi)")}</span>
+            <span className="sci-gen-badge">{t("NESİL")} {trainer.nesil ?? 0}</span>
             <span className={`sci-trainer-dot ${trainer.model_hazir ? 'on' : 'off'}`}>
-              {trainer.model_hazir ? 'AKTİF' : 'HENÜZ EĞİTİLMEDİ'}
+              {trainer.model_hazir ? t('AKTİF') : t('HENÜZ EĞİTİLMEDİ')}
             </span>
           </div>
           <div className="sci-trainer-grid">
             <div className="sci-tr-item">
-              <span className="sci-tr-label">Şampiyon Kalite (AUC)</span>
+              <span className="sci-tr-label">{t("Şampiyon Kalite (AUC)")}</span>
               <span className="sci-tr-value">{trainer.sampiyon_auc ?? '—'}</span>
             </div>
             <div className="sci-tr-item">
-              <span className="sci-tr-label">Toplanan Veri</span>
+              <span className="sci-tr-label">{t("Toplanan Veri")}</span>
               <span className="sci-tr-value">{trainer.toplanan_veri?.toLocaleString() ?? '—'}</span>
             </div>
             <div className="sci-tr-item">
-              <span className="sci-tr-label">Ebeveyn Nesil (yedek)</span>
+              <span className="sci-tr-label">{t("Ebeveyn Nesil (yedek)")}</span>
               <span className="sci-tr-value">
                 {trainer.ebeveyn_nesil != null
                   ? `N${trainer.ebeveyn_nesil} · ${trainer.ebeveyn_auc ?? '—'}`
-                  : 'yok'}
+                  : t('yok')}
               </span>
             </div>
             <div className="sci-tr-item">
-              <span className="sci-tr-label">Model Sağlığı</span>
+              <span className="sci-tr-label">{t("Model Sağlığı")}</span>
               <span className={`sci-tr-value ${trainer.saglik?.saglikli === false ? 'down' : 'up'}`}>
-                {trainer.saglik ? (trainer.saglik.saglikli ? '✓ sağlıklı' : '⚠ riskli') : '—'}
+                {trainer.saglik ? (trainer.saglik.saglikli ? t('✓ sağlıklı') : t('⚠ riskli')) : '—'}
               </span>
             </div>
           </div>
@@ -209,7 +210,7 @@ function SciencePanel({ apiBase }) {
           {/* Nesil ilerleyişi — her terfide AUC */}
           {trainer.nesil_gecmisi?.length > 0 && (
             <div className="sci-gen-history">
-              <span className="sci-gen-history-label">NESİL İLERLEYİŞİ:</span>
+              <span className="sci-gen-history-label">{t("NESİL İLERLEYİŞİ:")}</span>
               {trainer.nesil_gecmisi.map((g, i) => (
                 <span key={i} className="sci-gen-step" title={`AUC ${g.auc}`}>
                   N{g.nesil}<b>{g.auc}</b>
@@ -220,17 +221,16 @@ function SciencePanel({ apiBase }) {
           {/* Otomatik eğitim durumu (artık elle başlatmaya GEREK YOK) */}
           <div className="sci-train-control">
             <span className="sci-auto-train">
-              <span className="sci-auto-dot">●</span> OTOMATİK EĞİTİM AÇIK
+              <span className="sci-auto-dot">●</span> {t("OTOMATİK EĞİTİM AÇIK")}
               <span className="sci-auto-detail">
-                — sistem saatlik kontrol eder, yeterli yeni veri birikince kendini
-                sınar, KANITLARSA terfi eder. Elle başlatmaya gerek yok.
+                {t("— sistem saatlik kontrol eder, yeterli yeni veri birikince kendini sınar, KANITLARSA terfi eder. Elle başlatmaya gerek yok.")}
               </span>
             </span>
             <button className="sci-challenge-btn" onClick={runChallengeNow} disabled={trainBusy}>
-              {trainBusy ? 'DENENİYOR…' : '⟳ ŞİMDİ BİR TUR DENE'}
+              {trainBusy ? t('DENENİYOR…') : t('⟳ ŞİMDİ BİR TUR DENE')}
             </button>
             <button className="sci-cpcv-btn" onClick={runCpcv} disabled={cpcvBusy}>
-              {cpcvBusy ? 'KANIT TESTİ…' : '🔬 KANIT TESTİ (CPCV)'}
+              {cpcvBusy ? t('KANIT TESTİ…') : t('🔬 KANIT TESTİ (CPCV)')}
             </button>
           </div>
           {challengeMsg && <div className="sci-challenge-msg">{challengeMsg}</div>}
@@ -239,60 +239,53 @@ function SciencePanel({ apiBase }) {
           {cpcv?.yeterli_veri && (
             <div className="sci-cpcv">
               <div className="sci-cpcv-head">
-                🔬 KANIT TESTİ — Gerçek kenar mı, şans mı?
+                {t("🔬 KANIT TESTİ — Gerçek kenar mı, şans mı?")}
               </div>
               <div className={`sci-verdict-banner ${
                 cpcv.deflated_sharpe >= 0.9 && cpcv.pozitif_oran >= 0.8 ? 'good'
                 : cpcv.pozitif_oran >= 0.7 ? 'mid' : 'bad'}`}>
-                <b>{cpcv.pozitif_yol}/{cpcv.yol_sayisi} yol pozitif</b> · {cpcv.huküm}
+                <b>{t("{a}/{b} dönem pozitif", { a: cpcv.pozitif_yol, b: cpcv.yol_sayisi })}</b> · {tv(cpcv.huküm)}
               </div>
               <div className="sci-cpcv-grid">
                 <div className="sci-cpcv-item">
-                  <span className="sci-cpcv-l">Gerçeklik olasılığı</span>
-                  <span className="sci-cpcv-v" title="Deflated Sharpe — 1'e yakınsa kenar gerçek, 0.5'e yakınsa şans">
+                  <span className="sci-cpcv-l">{t("Gerçeklik olasılığı")}</span>
+                  <span className="sci-cpcv-v" title={t("Deflated Sharpe — 1'e yakınsa kenar gerçek, 0.5'e yakınsa şans")}>
                     %{Math.round(cpcv.deflated_sharpe * 100)}
                   </span>
                 </div>
                 <div className="sci-cpcv-item">
-                  <span className="sci-cpcv-l">Ortalama getiri</span>
+                  <span className="sci-cpcv-l">{t("Ortalama getiri")}</span>
                   <span className="sci-cpcv-v up">{cpcv.ortalama_getiri_R}R</span>
                 </div>
                 <div className="sci-cpcv-item">
-                  <span className="sci-cpcv-l">En kötü yol</span>
+                  <span className="sci-cpcv-l">{t("En kötü yol")}</span>
                   <span className={`sci-cpcv-v ${cpcv.en_kotu_R >= 0 ? 'up' : 'down'}`}>{cpcv.en_kotu_R}R</span>
                 </div>
                 <div className="sci-cpcv-item">
-                  <span className="sci-cpcv-l">En iyi yol</span>
+                  <span className="sci-cpcv-l">{t("En iyi yol")}</span>
                   <span className="sci-cpcv-v up">{cpcv.en_iyi_R}R</span>
                 </div>
               </div>
               <div className="sci-report-honest">
-                CPCV (López de Prado): {cpcv.yol_sayisi} farklı eğitim/test kombinasyonu denenir.
-                "Gerçeklik olasılığı" = bu kadar deneme yapınca en iyi sonucun şans olmama ihtimali.
-                %50 = yazı-tura, %90+ = güçlü kanıt.
+                {t("CPCV (López de Prado): {n} farklı eğitim/test kombinasyonu denenir. \"Gerçeklik olasılığı\" = bu kadar deneme yapınca en iyi sonucun şans olmama ihtimali. %50 = yazı-tura, %90+ = güçlü kanıt.", { n: cpcv.yol_sayisi })}
               </div>
             </div>
           )}
 
           <div className="sci-trainer-note">
-            Model <b>kendini otomatik eğitir</b> — sistem saatlik kontrol eder, yeterli yeni veri
-            birikince meydan-okuyan modeli sınar; testte bir önceki nesli <b>kanıtlanmış biçimde</b>
-            geçerse <b>nesil +1</b> olur. Bir önceki nesil (<b>ebeveyn</b>) yedekte tutulur — yeni nesil
-            zehirlenir/çökerse ona geri dönülür. Sağlıksız model AUC iyi görünse bile terfi edemez
-            (zehirlenme koruması). <b>Elle başlatmaya gerek yok</b>; bilgisayarı her açtığında kaçırılan
-            eğitim otomatik yakalanır. "Şimdi bir tur dene" sadece anında görmek isteyenler için.
+            {t("Model")} <b>{t("kendini otomatik eğitir")}</b> {t("— sistem saatlik kontrol eder, yeterli yeni veri birikince meydan-okuyan modeli sınar; testte bir önceki nesli")} <b>{t("kanıtlanmış biçimde")}</b> {t("geçerse")} <b>{t("nesil +1")}</b> {t("olur. Bir önceki nesil (")}<b>{t("ebeveyn")}</b>{t(") yedekte tutulur — yeni nesil zehirlenir/çökerse ona geri dönülür. Sağlıksız model AUC iyi görünse bile terfi edemez (zehirlenme koruması).")} <b>{t("Elle başlatmaya gerek yok")}</b>{t("; bilgisayarı her açtığında kaçırılan eğitim otomatik yakalanır. \"Şimdi bir tur dene\" sadece anında görmek isteyenler için.")}
           </div>
 
           {/* Durdurma raporu — ÇOKLU-PENCERE (sağlam) */}
           {report?.yeterli_veri && report.donemler && (
             <div className="sci-report">
-              <div className="sci-report-title">📊 ÇOKLU-PENCERE HAYALİ İŞLEM RAPORU (maliyet dahil)</div>
-              <div className="sci-report-method">{report.yontem}</div>
+              <div className="sci-report-title">{t("📊 ÇOKLU-PENCERE HAYALİ İŞLEM RAPORU (maliyet dahil)")}</div>
+              <div className="sci-report-method">{tv(report.yontem)}</div>
 
               {/* Tutarlılık hükmü */}
               <div className={`sci-verdict-banner ${
                 report.tutarlilik >= 0.8 ? 'good' : report.tutarlilik >= 0.6 ? 'mid' : 'bad'}`}>
-                <b>{report.pozitif_donem}/{report.donem_sayisi} dönem pozitif</b> · {report.huküm}
+                <b>{t("{a}/{b} dönem pozitif", { a: report.pozitif_donem, b: report.donem_sayisi })}</b> · {tv(report.huküm)}
               </div>
 
               {/* Dönem dönem sonuç */}
@@ -300,7 +293,7 @@ function SciencePanel({ apiBase }) {
                 {report.donemler.map((d) => (
                   <div key={d.donem} className="sci-period">
                     <span className="sci-period-date">{d.tarih_ilk} → {d.tarih_son}</span>
-                    <span className="sci-period-trades">{d.islem} işlem · %{(d.basari_orani * 100).toFixed(0)}</span>
+                    <span className="sci-period-trades">{t("{n} işlem · %{pct}", { n: d.islem, pct: (d.basari_orani * 100).toFixed(0) })}</span>
                     <span className={`sci-period-r ${d.net_getiri_R >= 0 ? 'up' : 'down'}`}>
                       {d.net_getiri_R >= 0 ? '+' : ''}{d.net_getiri_R}R
                     </span>
@@ -311,24 +304,22 @@ function SciencePanel({ apiBase }) {
               {/* Birleşik karşılaştırma */}
               <div className="sci-report-cols">
                 <div className="sci-report-col">
-                  <div className="sci-report-col-head">FİLTRESİZ (model kapalı)</div>
-                  <RepRow l="Toplam işlem" v={report.birlesik_ham.islem?.toLocaleString()} />
-                  <RepRow l="Başarı" v={`%${(report.birlesik_ham.basari_orani * 100).toFixed(1)}`} />
-                  <RepRow l="Net getiri" v={`${report.birlesik_ham.toplam_getiri_R}R`} cls="down" />
+                  <div className="sci-report-col-head">{t("FİLTRESİZ (model kapalı)")}</div>
+                  <RepRow l={t("Toplam işlem")} v={report.birlesik_ham.islem?.toLocaleString()} />
+                  <RepRow l={t("Başarı")} v={`%${(report.birlesik_ham.basari_orani * 100).toFixed(1)}`} />
+                  <RepRow l={t("Net getiri")} v={`${report.birlesik_ham.toplam_getiri_R}R`} cls="down" />
                 </div>
                 <div className="sci-report-col highlight">
-                  <div className="sci-report-col-head">FİLTRELİ (model açık)</div>
-                  <RepRow l="Toplam işlem" v={report.birlesik_filtreli.islem?.toLocaleString()} />
-                  <RepRow l="Başarı" v={`%${(report.birlesik_filtreli.basari_orani * 100).toFixed(1)}`} cls="up" />
-                  <RepRow l="Net getiri" v={`${report.birlesik_filtreli.toplam_getiri_R}R`}
+                  <div className="sci-report-col-head">{t("FİLTRELİ (model açık)")}</div>
+                  <RepRow l={t("Toplam işlem")} v={report.birlesik_filtreli.islem?.toLocaleString()} />
+                  <RepRow l={t("Başarı")} v={`%${(report.birlesik_filtreli.basari_orani * 100).toFixed(1)}`} cls="up" />
+                  <RepRow l={t("Net getiri")} v={`${report.birlesik_filtreli.toplam_getiri_R}R`}
                     cls={report.birlesik_filtreli.toplam_getiri_R >= 0 ? 'up' : 'down'} />
                 </div>
               </div>
 
               <div className="sci-report-honest">
-                ⚠ Bu rakamlar gerçekçidir: çoklu dönem testi (model tek döneme şanslı mı diye bakar)
-                + işlem başı {report.maliyet_R}R maliyet (komisyon+funding+slipaj) düşülmüştür.
-                "R" = riske ettiğin birim. Tek-pencere testindeki yüksek rakamlar bu yüzden düşer — gerçek tablo budur.
+                {t("⚠ Bu rakamlar gerçekçidir: çoklu dönem testi (model tek döneme şanslı mı diye bakar) + işlem başı {cost}R maliyet (komisyon+funding+slipaj) düşülmüştür. \"R\" = riske ettiğin birim. Tek-pencere testindeki yüksek rakamlar bu yüzden düşer — gerçek tablo budur.", { cost: report.maliyet_R })}
               </div>
             </div>
           )}
@@ -336,26 +327,26 @@ function SciencePanel({ apiBase }) {
           {/* Eski tek-pencere format (az veri durumunda) */}
           {report?.yeterli_veri && !report.donemler && report.ham && (
             <div className="sci-report">
-              <div className="sci-report-title">📊 HAYALİ İŞLEM RAPORU (tek pencere)</div>
-              <div className="sci-report-method">{report.yontem}</div>
+              <div className="sci-report-title">{t("📊 HAYALİ İŞLEM RAPORU (tek pencere)")}</div>
+              <div className="sci-report-method">{tv(report.yontem)}</div>
               <div className="sci-report-cols">
                 <div className="sci-report-col">
-                  <div className="sci-report-col-head">FİLTRESİZ</div>
-                  <RepRow l="İşlem" v={report.ham.islem?.toLocaleString()} />
-                  <RepRow l="Başarı" v={`%${(report.ham.basari_orani * 100).toFixed(1)}`} />
-                  <RepRow l="Getiri" v={`${report.ham.toplam_getiri_R}R`}
+                  <div className="sci-report-col-head">{t("FİLTRESİZ")}</div>
+                  <RepRow l={t("İşlem")} v={report.ham.islem?.toLocaleString()} />
+                  <RepRow l={t("Başarı")} v={`%${(report.ham.basari_orani * 100).toFixed(1)}`} />
+                  <RepRow l={t("Getiri")} v={`${report.ham.toplam_getiri_R}R`}
                     cls={report.ham.toplam_getiri_R >= 0 ? 'up' : 'down'} />
                 </div>
                 <div className="sci-report-col highlight">
-                  <div className="sci-report-col-head">FİLTRELİ</div>
+                  <div className="sci-report-col-head">{t("FİLTRELİ")}</div>
                   {report.filtreli?.islem ? (
                     <>
-                      <RepRow l="İşlem" v={report.filtreli.islem?.toLocaleString()} />
-                      <RepRow l="Başarı" v={`%${(report.filtreli.basari_orani * 100).toFixed(1)}`} cls="up" />
-                      <RepRow l="Getiri" v={`${report.filtreli.toplam_getiri_R}R`}
+                      <RepRow l={t("İşlem")} v={report.filtreli.islem?.toLocaleString()} />
+                      <RepRow l={t("Başarı")} v={`%${(report.filtreli.basari_orani * 100).toFixed(1)}`} cls="up" />
+                      <RepRow l={t("Getiri")} v={`${report.filtreli.toplam_getiri_R}R`}
                         cls={report.filtreli.toplam_getiri_R >= 0 ? 'up' : 'down'} />
                     </>
-                  ) : <div className="sci-report-empty">{report.filtreli?.neden}</div>}
+                  ) : <div className="sci-report-empty">{tv(report.filtreli?.neden)}</div>}
                 </div>
               </div>
             </div>
@@ -367,8 +358,7 @@ function SciencePanel({ apiBase }) {
 
       {!data && !loading && !error && (
         <div className="sci-empty">
-          Zaman dilimini seçip <b>ANALİZ ET</b>'e basın — sistem son 500 mumun
-          stokastik matematiğini ve gizli örüntülerini çözecek.
+          {t("Zaman dilimini seçip")} <b>{t("ANALİZ ET")}</b> {t("'e basın — sistem son 500 mumun stokastik matematiğini ve gizli örüntülerini çözecek.")}
         </div>
       )}
 
@@ -382,48 +372,48 @@ function SciencePanel({ apiBase }) {
           <div className="sci-grid">
             {/* GRUP 1: Tahmin edilebilirlik */}
             <div className="sci-card">
-              <div className="sci-card-title">① Tahmin Edilebilirlik</div>
+              <div className="sci-card-title">{t("① Tahmin Edilebilirlik")}</div>
 
-              <Metric label="Hurst Üssü" value={rw.hurst ?? '—'}
-                hint={rw.yorum}>
+              <Metric label={t("Hurst Üssü")} value={rw.hurst ?? '—'}
+                hint={tv(rw.yorum)}>
                 <Bar value={rw.hurst} color={hurstColor} />
                 <div className="sci-scale">
-                  <span>0 · dönüş</span><span>0.5 · rastgele</span><span>1 · trend</span>
+                  <span>{t("0 · dönüş")}</span><span>{t("0.5 · rastgele")}</span><span>{t("1 · trend")}</span>
                 </div>
               </Metric>
 
-              <Metric label="Öngörülebilirlik (Entropi)" value={pe.ongorulebilirlik ?? '—'}
-                hint={pe.yorum}>
+              <Metric label={t("Öngörülebilirlik (Entropi)")} value={pe.ongorulebilirlik ?? '—'}
+                hint={tv(pe.yorum)}>
                 <Bar value={pe.ongorulebilirlik} color={entColor} />
                 <div className="sci-scale">
-                  <span>0 · gürültü</span><span>1 · yapısal</span>
+                  <span>{t("0 · gürültü")}</span><span>{t("1 · yapısal")}</span>
                 </div>
               </Metric>
 
-              <Metric label="Yön Hafızası" value={acf.yon_hafizasi || '—'}
-                hint={acf.yorum} />
+              <Metric label={t("Yön Hafızası")} value={acf.yon_hafizasi || '—'}
+                hint={tv(acf.yorum)} />
             </div>
 
             {/* GRUP 2: Volatilite */}
             <div className="sci-card">
-              <div className="sci-card-title">② Volatilite (GARCH)</div>
+              <div className="sci-card-title">{t("② Volatilite (GARCH)")}</div>
 
-              <Metric label="Yarının Oynaklığı"
-                value={garchFc.yon ? `${garchFc.yon} (${garchFc.sonraki_bar_vol_yuzde}%)` : '—'}
-                hint={garchFc.yorum} />
+              <Metric label={t("Yarının Oynaklığı")}
+                value={garchFc.yon ? `${tv(garchFc.yon)} (${garchFc.sonraki_bar_vol_yuzde}%)` : '—'}
+                hint={tv(garchFc.yorum)} />
 
-              <Metric label="Kalıcılık (α+β)" value={garch.kalicilik ?? '—'}
-                hint={garch.yorum}>
+              <Metric label={t("Kalıcılık (α+β)")} value={garch.kalicilik ?? '—'}
+                hint={tv(garch.yorum)}>
                 <Bar value={garch.kalicilik} color="var(--amber)" />
               </Metric>
 
-              <Metric label="Mevcut Rejim" value={rejim.mevcut_rejim?.replace('_', ' ') || '—'}
-                hint={rejim.yorum}>
+              <Metric label={t("Mevcut Rejim")} value={tv(rejim.mevcut_rejim)?.replace('_', ' ') || '—'}
+                hint={tv(rejim.yorum)}>
                 {rejim.olasiliklar && (
                   <div className="sci-regime">
-                    <span className="reg-low">düşük %{Math.round((rejim.olasiliklar['düşük'] || 0) * 100)}</span>
-                    <span className="reg-mid">orta %{Math.round((rejim.olasiliklar['orta'] || 0) * 100)}</span>
-                    <span className="reg-high">yüksek %{Math.round((rejim.olasiliklar['yüksek'] || 0) * 100)}</span>
+                    <span className="reg-low">{t("düşük %{pct}", { pct: Math.round((rejim.olasiliklar['düşük'] || 0) * 100) })}</span>
+                    <span className="reg-mid">{t("orta %{pct}", { pct: Math.round((rejim.olasiliklar['orta'] || 0) * 100) })}</span>
+                    <span className="reg-high">{t("yüksek %{pct}", { pct: Math.round((rejim.olasiliklar['yüksek'] || 0) * 100) })}</span>
                   </div>
                 )}
               </Metric>
@@ -431,35 +421,35 @@ function SciencePanel({ apiBase }) {
 
             {/* GRUP 3: Dağılım & Risk */}
             <div className="sci-card">
-              <div className="sci-card-title">③ Dağılım & Kuyruk Riski</div>
+              <div className="sci-card-title">{t("③ Dağılım & Kuyruk Riski")}</div>
 
-              <Metric label="Kuyruk" value={dist.kuyruk || '—'}
-                hint={dist.yorum} />
+              <Metric label={t("Kuyruk")} value={tv(dist.kuyruk) || '—'}
+                hint={tv(dist.yorum)} />
 
-              <Metric label="Basıklık (fazla)" value={dist.basiklik_fazlasi ?? '—'}
-                hint="0'dan büyük = kalın kuyruk: aşırı hareketler normalden sık." />
+              <Metric label={t("Basıklık (fazla)")} value={dist.basiklik_fazlasi ?? '—'}
+                hint={t("0'dan büyük = kalın kuyruk: aşırı hareketler normalden sık.")} />
 
-              <Metric label="Çarpıklık" value={dist.carpiklik ?? '—'}
-                hint="Negatif = ani çöküş eğilimi (sol kuyruk uzun)." />
+              <Metric label={t("Çarpıklık")} value={dist.carpiklik ?? '—'}
+                hint={t("Negatif = ani çöküş eğilimi (sol kuyruk uzun).")} />
             </div>
 
             {/* GRUP 4: Örüntü çözme */}
             <div className="sci-card">
-              <div className="sci-card-title">④ Örüntü Çözme (Deşifre)</div>
+              <div className="sci-card-title">{t("④ Örüntü Çözme (Deşifre)")}</div>
 
-              <Metric label="Baskın Döngü"
+              <Metric label={t("Baskın Döngü")}
                 value={enGuclu ? `${enGuclu.periyot_bar} bar` : '—'}
-                hint={cyc.yorum}>
+                hint={tv(cyc.yorum)}>
                 {enGuclu && (
                   <div className="sci-snr">
                     SNR <b className={enGuclu.snr >= 3 ? 'good' : 'weak'}>{enGuclu.snr}</b>
-                    {enGuclu.snr >= 3 ? ' (net sinyal)' : ' (gürültüde)'}
+                    {enGuclu.snr >= 3 ? t('(net sinyal)') : t('(gürültüde)')}
                   </div>
                 )}
               </Metric>
 
-              <Metric label="Difüzyon Bandı (±1σ, ~%68)"
-                hint="Fiyatın ~%68 olasılıkla kalacağı aralık (Brown hareketi).">
+              <Metric label={t("Difüzyon Bandı (±1σ, ~%68)")}
+                hint={t("Fiyatın ~%68 olasılıkla kalacağı aralık (Brown hareketi).")}>
                 {dif.bant_1sigma && (
                   <div className="sci-band num">
                     <span className="down">{dif.bant_1sigma.alt?.toLocaleString()}</span>
@@ -473,9 +463,9 @@ function SciencePanel({ apiBase }) {
 
           {/* Bütünsel yorum */}
           <div className="sci-verdict">
-            <div className="sci-verdict-title">⚖ BÜTÜNSEL OKUMA</div>
+            <div className="sci-verdict-title">{t("⚖ BÜTÜNSEL OKUMA")}</div>
             <p>{buildVerdict(rw, pe, garchFc, rejim, dist)}</p>
-            <div className="sci-refs">{data._referanslar}</div>
+            <div className="sci-refs">{tv(data._referanslar)}</div>
           </div>
         </>
       )}
@@ -488,23 +478,23 @@ function buildVerdict(rw, pe, garchFc, rejim, dist) {
   const parts = [];
   // tahmin edilebilirlik
   if (pe.seviye === 'gürültü' || rw.rejim === 'random_walk') {
-    parts.push('Piyasa şu an büyük ölçüde RASTGELE — yön tahminine düşük güven verin, küçük pozisyon.');
+    parts.push(t("Piyasa şu an büyük ölçüde RASTGELE — yön tahminine düşük güven verin, küçük pozisyon."));
   } else if (rw.rejim === 'trend' && pe.seviye === 'yapısal') {
-    parts.push('Yapısal + trendli rejim — yön tahmini için elverişli ortam, trend takibi anlamlı.');
+    parts.push(t("Yapısal + trendli rejim — yön tahmini için elverişli ortam, trend takibi anlamlı."));
   } else if (rw.rejim === 'ortalama_donus') {
-    parts.push('Ortalamaya dönüş eğilimi — aşırılıklardan kontra-trend fırsatları aranabilir.');
+    parts.push(t("Ortalamaya dönüş eğilimi — aşırılıklardan kontra-trend fırsatları aranabilir."));
   } else {
-    parts.push('Karışık rejim — net bir kenar yok, seçici olun.');
+    parts.push(t("Karışık rejim — net bir kenar yok, seçici olun."));
   }
   // volatilite
   if (garchFc.yon === 'yükseliyor') {
-    parts.push('Volatilite ARTIYOR: pozisyonu küçült, stop\'u genişlet, kaldıracı düşür.');
+    parts.push(t("Volatilite ARTIYOR: pozisyonu küçült, stop'u genişlet, kaldıracı düşür."));
   } else if (garchFc.yon === 'düşüyor') {
-    parts.push('Volatilite sönüyor: sakin piyasa, normal boyutlandırma.');
+    parts.push(t("Volatilite sönüyor: sakin piyasa, normal boyutlandırma."));
   }
   // kuyruk
   if (dist.kuyruk === 'çok_kalın' || dist.kuyruk === 'kalın') {
-    parts.push('Kalın kuyruk: aşırı hareket riski yüksek, stop\'lar geniş olmalı.');
+    parts.push(t("Kalın kuyruk: aşırı hareket riski yüksek, stop'lar geniş olmalı."));
   }
   return parts.join(' ');
 }

@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useCallback } from 'react';
 import { createChart, CrosshairMode } from 'lightweight-charts';
 import './Chart.css';
 
+import { getLang } from '../i18n';
+
 function Chart({ klines, technicalData }) {
   const containerRef = useRef(null);
   const chartRef = useRef(null);
@@ -26,7 +28,7 @@ function Chart({ klines, technicalData }) {
       localization: {
         timeFormatter: (t) => {
           const d = new Date(t * 1000);
-          return d.toLocaleString('tr-TR', {
+          return d.toLocaleString(getLang() === 'tr' ? 'tr-TR' : 'en-US', {
             day: '2-digit', month: '2-digit',
             hour: '2-digit', minute: '2-digit',
           });
@@ -54,7 +56,7 @@ function Chart({ klines, technicalData }) {
         // eksen üzerindeki saat etiketleri de yerel saatle
         tickMarkFormatter: (t) => {
           const d = new Date(t * 1000);
-          return d.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+          return d.toLocaleTimeString(getLang() === 'tr' ? 'tr-TR' : 'en-US', { hour: '2-digit', minute: '2-digit' });
         },
       },
       handleScroll: { vertTouchDrag: false },

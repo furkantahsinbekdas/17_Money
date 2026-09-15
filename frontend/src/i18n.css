@@ -1,0 +1,33 @@
+/* Dil değiştirme düğmesi (TR | EN) — üst barda sağda durur. */
+.lang-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid var(--line, #2a2a2a);
+  border-radius: 4px;
+  background: var(--bg-inset, #0c1015);
+}
+
+.lang-btn {
+  border: none;
+  background: transparent;
+  color: var(--ink-dim, #8a8a8a);
+  font-family: var(--font-cond, sans-serif);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  padding: 2px 7px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.lang-btn:hover {
+  color: var(--ink, #e6e6e6);
+}
+
+.lang-btn.active {
+  background: var(--info, #2b6cb0);
+  color: #fff;
+}

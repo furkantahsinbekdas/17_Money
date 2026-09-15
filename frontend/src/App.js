@@ -9,6 +9,7 @@ import IndicatorMatrix from './components/IndicatorMatrix';
 import SciencePanel from './components/SciencePanel';
 import PaperPanel from './components/PaperPanel';
 import './App.css';
+import { t, tv, useLang } from './i18n';
 
 // Bağlantı/sembol ayarları ortam değişkenlerinden gelir (frontend/.env.example).
 // Varsayılanlar yerel geliştirme içindir: backend http://localhost:8000.
@@ -21,6 +22,7 @@ const DEFAULT_INTERVAL = process.env.REACT_APP_DEFAULT_INTERVAL || '1h';
 const INTERVALS = (process.env.REACT_APP_INTERVALS || '15m,1h,4h,1d').split(',');
 
 function App() {
+  const [lang] = useLang(); // dil değişiminde tüm ağaç yeniden çizilir
   const [marketData, setMarketData] = useState(null);
   const [analysisData, setAnalysisData] = useState(null);
   const [forecast, setForecast] = useState(null);
@@ -60,7 +62,7 @@ function App() {
       setError(null);
       setLoading(false);
     } catch (err) {
-      setError('Backend bağlantısı kurulamadı. start.bat çalıştırın.');
+      setError(t("Backend bağlantısı kurulamadı. start.bat çalıştırın."));
       setLoading(false);
     }
   }, [interval]);
@@ -130,7 +132,7 @@ function App() {
       <div className="loading-screen">
         <div className="loading-logo">17MONEY</div>
         <div className="loading-sub">FORECAST TERMINAL</div>
-        <div className="loading-text">Piyasa verileri yükleniyor…</div>
+        <div className="loading-text">{t("Piyasa verileri yükleniyor…")}</div>
         <div className="loading-spinner"></div>
       </div>
     );
@@ -141,7 +143,7 @@ function App() {
       <div className="loading-screen">
         <div className="loading-logo">17MONEY</div>
         <div className="error-text">{error}</div>
-        <button className="retry-btn" onClick={fetchData}>TEKRAR DENE</button>
+        <button className="retry-btn" onClick={fetchData}>{t("TEKRAR DENE")}</button>
       </div>
     );
   }
@@ -149,7 +151,7 @@ function App() {
   const tech = marketData?.technical;
 
   return (
-    <div className="app">
+    <div className="app" data-lang={lang}>
       <MarketBar
         ticker={marketData?.ticker}
         analysisData={analysisData}
@@ -158,9 +160,9 @@ function App() {
 
       <div className="tab-bar">
         <button className={`tab-btn ${tab === 'terminal' ? 'active' : ''}`}
-          onClick={() => setTab('terminal')}>TERMİNAL</button>
+          onClick={() => setTab('terminal')}>{t("TERMİNAL")}</button>
         <button className={`tab-btn ${tab === 'bilim' ? 'active' : ''}`}
-          onClick={() => setTab('bilim')}>BİLİM · MATEMATİK</button>
+          onClick={() => setTab('bilim')}>{t("BİLİM · MATEMATİK")}</button>
         <button className={`tab-btn ${tab === 'paper' ? 'active' : ''}`}
           onClick={() => setTab('paper')}>PAPER TRADING</button>
       </div>
@@ -198,7 +200,7 @@ function App() {
                 </span>
                 <span>ATR% {tech?.atr?.atr_yuzde ?? '—'}</span>
                 <span className={tech?.trend?.includes('yükseliş') ? 'up' : tech?.trend?.includes('düşüş') ? 'down' : ''}>
-                  {tech?.trend?.replace(/_/g, ' ') || '—'}
+                  {tv(tech?.trend)?.replace(/_/g, ' ') || '—'}
                 </span>
               </div>
             </div>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './SignalCard.css';
+import { t, tv } from '../i18n';
 
 const YON_DOT = { 'boğa': 'up', 'ayı': 'down', 'nötr': 'flat' };
 
@@ -17,14 +18,14 @@ function SignalCard({ signal, technicalData }) {
     return (
       <div className="signal-card empty">
         <div className="signal-empty-text">
-          Uzman analiz için "SİNYAL" veya web araştırmalı "DERİN" butonunu kullanın.
+          {t("Uzman analiz için \"SİNYAL\" veya web araştırmalı \"DERİN\" butonunu kullanın.")}
         </div>
         {technicalData && (
           <div className="quick-analysis">
-            <QuickRow label="Order Blocks" value={`${technicalData.order_blocks?.length || 0} tespit`} />
-            <QuickRow label="FVG" value={`${technicalData.fvg?.length || 0} tespit`} />
+            <QuickRow label="Order Blocks" value={t('{n} tespit', { n: technicalData.order_blocks?.length || 0 })} />
+            <QuickRow label="FVG" value={t('{n} tespit', { n: technicalData.fvg?.length || 0 })} />
             <QuickRow
-              label="Yapısal"
+              label={t("Yapısal")}
               value={
                 technicalData.structure?.choch
                   ? `CHoCH ${technicalData.structure.choch.direction}`
@@ -42,7 +43,7 @@ function SignalCard({ signal, technicalData }) {
   if (signal.error) {
     return (
       <div className="signal-card error-card">
-        <div className="signal-badge bekle">HATA</div>
+        <div className="signal-badge bekle">{t("HATA")}</div>
         <div className="signal-analysis">{signal.analiz}</div>
       </div>
     );
@@ -57,9 +58,9 @@ function SignalCard({ signal, technicalData }) {
     <div className="signal-card">
       {/* Üst satır: sinyal + rejim + güven */}
       <div className="signal-top">
-        <div className={`signal-badge ${badgeClass}`}>{sinyalType}</div>
+        <div className={`signal-badge ${badgeClass}`}>{t(sinyalType)}</div>
         {signal.piyasa_rejimi && (
-          <span className="regime-tag">{signal.piyasa_rejimi.replace(/_/g, ' ')}</span>
+          <span className="regime-tag">{tv(signal.piyasa_rejimi)?.replace(/_/g, ' ')}</span>
         )}
         <div className="signal-confidence">
           <div className="conf-bar">
@@ -76,7 +77,7 @@ function SignalCard({ signal, technicalData }) {
 
       {/* Seviyeler */}
       <div className="signal-levels">
-        <LevelRow label="GİRİŞ" value={fmtPrice(signal.giris)} cls="entry" />
+        <LevelRow label={t("GİRİŞ")} value={fmtPrice(signal.giris)} cls="entry" />
         <LevelRow label="STOP" value={fmtPrice(signal.stop_loss)} cls="stop" />
         {hedefler.map((h, i) => (
           <LevelRow key={i} label={`TP${i + 1}`} value={fmtPrice(h)} cls="target" />
@@ -85,10 +86,10 @@ function SignalCard({ signal, technicalData }) {
 
       {/* Risk parametreleri */}
       <div className="risk-strip">
-        {signal.risk_odul && <span className="risk-chip">R/Ö {signal.risk_odul}</span>}
-        {signal.kaldirac_onerisi && <span className="risk-chip">KALDIRAÇ {signal.kaldirac_onerisi}</span>}
+        {signal.risk_odul && <span className="risk-chip">{t("R/Ö")} {signal.risk_odul}</span>}
+        {signal.kaldirac_onerisi && <span className="risk-chip">{t("KALDIRAÇ")} {signal.kaldirac_onerisi}</span>}
         {signal.pozisyon_riski_yuzde != null && (
-          <span className="risk-chip">RİSK %{signal.pozisyon_riski_yuzde}</span>
+          <span className="risk-chip">{t("RİSK %")}{signal.pozisyon_riski_yuzde}</span>
         )}
       </div>
 
@@ -98,11 +99,11 @@ function SignalCard({ signal, technicalData }) {
       {signal.senaryolar && (
         <div className="scenarios">
           <div className="scenario bull">
-            <span className="sc-title">▲ BOĞA</span>
+            <span className="sc-title">{t("▲ BOĞA")}</span>
             <p>{signal.senaryolar.boga}</p>
           </div>
           <div className="scenario bear">
-            <span className="sc-title">▼ AYI</span>
+            <span className="sc-title">{t("▼ AYI")}</span>
             <p>{signal.senaryolar.ayi}</p>
           </div>
         </div>
@@ -111,7 +112,7 @@ function SignalCard({ signal, technicalData }) {
       {/* Geçersizlik */}
       {signal.gecersizlik_kosulu && (
         <div className="invalidation">
-          <span className="inv-label">GEÇERSİZLİK</span>
+          <span className="inv-label">{t("GEÇERSİZLİK")}</span>
           <span>{signal.gecersizlik_kosulu}</span>
         </div>
       )}
@@ -120,7 +121,7 @@ function SignalCard({ signal, technicalData }) {
       {signal.gosterge_analizi?.length > 0 && (
         <div className="ind-analysis">
           <button className="ind-toggle" onClick={() => setShowIndicators(s => !s)}>
-            GÖSTERGE ANALİZİ ({signal.gosterge_analizi.length}) {showIndicators ? '▾' : '▸'}
+            {t('GÖSTERGE ANALİZİ ({n})', { n: signal.gosterge_analizi.length })} {showIndicators ? '▾' : '▸'}
           </button>
           {showIndicators && (
             <div className="ind-list">
@@ -129,7 +130,7 @@ function SignalCard({ signal, technicalData }) {
                   <div className="ind-head">
                     <span className={`ind-dot ${YON_DOT[g.yon] || 'flat'}`} />
                     <span className="ind-name">{g.gosterge}</span>
-                    <span className="ind-state">{g.durum}</span>
+                    <span className="ind-state">{tv(g.durum)}</span>
                   </div>
                   <p className="ind-behavior">{g.davranis}</p>
                 </div>
@@ -159,7 +160,7 @@ function SignalCard({ signal, technicalData }) {
       {/* Derin araştırma raporu (deep=true ile geldiyse) */}
       {signal.arastirma?.rapor && (
         <details className="research-details">
-          <summary>DERİN ARAŞTIRMA RAPORU</summary>
+          <summary>{t("DERİN ARAŞTIRMA RAPORU")}</summary>
           <div className="research-body">{signal.arastirma.rapor}</div>
           {signal.arastirma.kaynaklar?.length > 0 && (
             <div className="research-sources">
